@@ -16,4 +16,8 @@ class Product extends Model
         "part_number",
         "price"
     ];
+
+    public function orders(){
+        return $this->belongsToMany(Order::class);
+    }
 }

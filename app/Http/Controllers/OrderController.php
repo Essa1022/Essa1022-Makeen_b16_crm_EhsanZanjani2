@@ -14,7 +14,8 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with('user:id,username')->orderby('desc', 'id')->paginate(2);
+        $orders = Order::with(['user:id,username', 'products:id,product_name'])
+        ->orderby('id', 'desc')->paginate(2);
         return response()->json($orders);
     }
 
@@ -24,6 +25,7 @@ class OrderController extends Controller
     public function store(CreateOrderRequest $request)
     {
         $order = Order::create($request->toArray());
+        $order->products()->attach($request->product_ids);
         return response()->json($order);
     }
 
@@ -54,5 +56,3 @@ class OrderController extends Controller
         return response()->json($order);
     }
 }
-
-

@@ -14,7 +14,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::orderby('desc', 'id')->paginate(2);
+        $products = Product::orderby('id', 'desc')->paginate(2);
         return response()->json($products);
     }
 

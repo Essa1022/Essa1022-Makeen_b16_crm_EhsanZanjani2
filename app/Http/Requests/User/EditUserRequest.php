@@ -24,7 +24,7 @@ class EditUserRequest extends FormRequest
         return [
             "username" => "required",
             "password" => "required|min:4",
-            "phone_number" => "required|degits:11|unique:users,phone_number". $this->user,
+            "phone_number" => "required|digits:11|unique:users,phone_number". $this->user,
             "email" => "nullable|email"
         ];
     }

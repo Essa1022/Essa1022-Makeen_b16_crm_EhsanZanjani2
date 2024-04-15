@@ -14,7 +14,7 @@ class UserController extends Controller
     // logout
     public function logout(){
         $user = auth()->user();
-        $user->CurrentAccessToken()->delete();
+        $user->currentAccessToken()->delete();
         return response()->json('logout');
     }
 
@@ -39,7 +39,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderby('desc', 'id')->paginate(2);
+        $users = User::orderby('id', 'desc')->paginate(2);
         return response()->json($users);
     }
 
