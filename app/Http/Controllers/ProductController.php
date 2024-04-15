@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\User\CreateUserRequest;
-use App\Http\Requests\User\EditUserRequest;
+use App\Http\Requests\Product\CreateProductRequest;
+use App\Http\Requests\Product\EditProductRequest;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -22,7 +21,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateUserRequest $request)
+    public function store(CreateProductRequest $request)
     {
         $product = Product::create($request->toArray());
         return response()->json($product);
@@ -40,7 +39,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(EditUserRequest $request, string $product)
+    public function update(EditProductRequest $request, string $product)
     {
         $product = Product::where('id', $product)->update($request->toArray());
         return response()->json($product);

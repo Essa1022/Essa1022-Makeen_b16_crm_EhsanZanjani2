@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -18,3 +19,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('users', User::class);
 Route::resource('products', Product::class);
+Route::resource('order', Order::class);
