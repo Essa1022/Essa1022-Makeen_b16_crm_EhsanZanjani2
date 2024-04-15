@@ -7,10 +7,17 @@ use App\Http\Requests\User\EditUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redis;
+
 
 class UserController extends Controller
 {
+    // logout
+    public function logout(){
+        $user = auth()->user();
+        $user->CurrentAccessToken()->delete();
+        return response()->json('logout');
+    }
+
     // login
     public function login(Request $request)
     {
