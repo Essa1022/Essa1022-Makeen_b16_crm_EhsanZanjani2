@@ -11,7 +11,7 @@ class EditUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return ture;
     }
 
     /**

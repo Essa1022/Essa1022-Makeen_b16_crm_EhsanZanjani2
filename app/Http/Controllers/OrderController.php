@@ -7,7 +7,7 @@ use App\Http\Requests\Order\EdiOrdertRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.

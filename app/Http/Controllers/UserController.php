@@ -7,9 +7,26 @@ use App\Http\Requests\User\EditUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redis;
 
 class UserController extends Controller
 {
+    // login
+    public function login(Request $request)
+    {
+        $user = User::select('id', 'phone_number', 'password')
+        ->where('phone_number', $request->phone_number)->first();
+
+        if(!$user){
+            return response()->json('user not found');
+        }
+        if(!Hash::check($request->password, $user->password)){
+            return response()->json('password incorrect');
+        }
+        $token = $user->createToken($request->phone_number)->plainTextToken;
+        return response()->json(['token' => $token]);
+    }
+
     /**
      * Display a listing of the resource.
      */

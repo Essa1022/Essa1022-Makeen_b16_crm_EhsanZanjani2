@@ -1,9 +1,8 @@
 <?php
 
-use App\Models\Order;
-use App\Models\Product;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +15,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::post('login', [UserController::class, 'login'])->name('login');
+Route::middleware('auth:sanctum')->group(function(){
+    Route::resource('users', UserController::class);
+    Route::resource('products', ProductController::class);
+    Route::resource('order', OrderController::class);
+});
 
-Route::resource('users', User::class);
-Route::resource('products', Product::class);
-Route::resource('order', Order::class);
+
