@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('warranties', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->foreignId('product_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
             $table->string('expiration');
             $table->text('description')->nullable();
             $table->timestamps();

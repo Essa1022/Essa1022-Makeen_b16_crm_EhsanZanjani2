@@ -13,11 +13,19 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(string $id = null)
     {
-        $orders = Order::with(['user:id,username', 'products:id,product_name'])
-        ->orderby('id', 'desc')->paginate(2);
-        return response()->json($orders);
+        if(!$id)
+        {
+            $orders = Order::with(['user:id,username', 'products:id,product_name'])
+            ->orderby('id', 'desc')->paginate(2);
+            return response()->json($orders);
+        }
+        else
+        {
+            $order = Order::with(['user:id,username', 'products:id,product_name'])->find($id);
+            return response()->json($order);
+        }
     }
 
     /**
@@ -27,10 +35,10 @@ class OrderController extends Controller
     {
         $order = Order::create($request->toArray());
         $extra = $request->input('extra');
-        $wExpireAt =Carbon::now()->addMonth(12);
+        $warranty_expires_at =Carbon::now()->addMonth(12);
         foreach($extra as $ex){
             $order->products()->attach($ex['id'],
-            ["quantity" => $ex['quantity'], "wExpireAt" => $wExpireAt]);
+            ["quantity" => $ex['quantity'], "warranty_expires_at" => $warranty_expires_at]);
         }
          return response()->json($order);
     }
@@ -38,27 +46,27 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $order)
-    {
-        $order = Order::with(['user:id,username', 'products:id,product_name'])->find($order);
-        return response()->json($order);
-    }
+    // public function show(string $order)
+    // {
+    //     $order = Order::with(['user:id,username', 'products:id,product_name'])->find($order);
+    //     return response()->json($order);
+    // }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(EdiOrdertRequest $request, string $order)
+    public function update(EdiOrdertRequest $request, string $id)
     {
-        $order = Order::where('id', $order)->update($request->toArray());
+        $order = Order::find($id)->update($request->toArray());
         return response()->json($order);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $order)
+    public function destroy(string $id)
     {
-        $order = Order::destroy($order);
+        $order = Order::destroy($id);
         return response()->json($order);
     }
 }

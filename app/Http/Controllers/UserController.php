@@ -37,10 +37,18 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(string $id = null)
     {
-        $users = User::orderby('id', 'desc')->paginate(2);
-        return response()->json($users);
+        if(!$id)
+        {
+            $users = User::orderby('id', 'desc')->paginate(2);
+            return response()->json($users);
+        }
+        else
+        {
+            $user = User::find($id);
+            return response()->json($user);
+        }
     }
 
     /**
@@ -57,18 +65,18 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $user)
-    {
-        $user = User::find($user);
-        return response()->json($user);
-    }
+    // public function show(string $user)
+    // {
+    //     $user = User::find($user);
+    //     return response()->json($user);
+    // }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(EditUserRequest $request, string $user)
+    public function update(EditUserRequest $request, string $id)
     {
-        $user = User::find( $user)->update($request->merge([
+        $user = User::find( $id)->update($request->merge([
             "password" => Hash::make($request->password)
         ])->toArray());
         return response()->json($user);
@@ -77,9 +85,9 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $user)
+    public function destroy(string $id)
     {
-        $user = User::destroy($user);
+        $user = User::destroy($id);
         return response()->json($user);
     }
 }

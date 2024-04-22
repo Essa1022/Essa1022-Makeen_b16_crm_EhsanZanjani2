@@ -12,10 +12,18 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(string $id = null)
+    {
+        if(!$id)
     {
         $products = Product::orderby('id', 'desc')->paginate(2);
         return response()->json($products);
+    }
+    else
+    {
+        $product = Product::find($id);
+        return response()->json($product);
+    }
     }
 
     /**
@@ -30,27 +38,27 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $product)
-    {
-        $product = Product::find($product);
-        return response()->json($product);
-    }
+    // public function show(string $product)
+    // {
+    //     $product = Product::find($product);
+    //     return response()->json($product);
+    // }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(EditProductRequest $request, string $product)
+    public function update(EditProductRequest $request, string $id)
     {
-        $product = Product::where('id', $product)->update($request->toArray());
+        $product = Product::find($id)->update($request->toArray());
         return response()->json($product);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $product)
+    public function destroy(string $id)
     {
-        $product = Product::destroy($product);
+        $product = Product::destroy($id);
         return response()->json($product);
     }
 }

@@ -13,6 +13,5 @@ class Factor extends Model
         "amount",
         "status",
         "order_id",
-        "user_id"
     ];
 }

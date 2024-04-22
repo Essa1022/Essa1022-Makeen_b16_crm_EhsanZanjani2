@@ -11,7 +11,6 @@ class Warranty extends Model
 
     protected $fillable = [
         "title",
-        "product_id",
         "expiration",
         "description"
     ];

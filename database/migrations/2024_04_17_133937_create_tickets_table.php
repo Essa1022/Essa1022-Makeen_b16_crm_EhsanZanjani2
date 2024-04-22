@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('subject');
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('message_id');
-            $table->timestamp('expire_at');
+            $table->timestamp('expires_at');
             $table->timestamps();
         });
     }

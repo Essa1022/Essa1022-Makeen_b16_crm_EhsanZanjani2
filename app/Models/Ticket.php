@@ -12,7 +12,6 @@ class Ticket extends Model
     protected $fillable = [
         "subject",
         "user_id",
-        "message_id",
-        "expire_at"
+        "expires_at"
     ];
 }

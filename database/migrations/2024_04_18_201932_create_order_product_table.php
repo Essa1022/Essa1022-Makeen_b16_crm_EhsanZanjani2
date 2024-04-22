@@ -12,11 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('order_product', function (Blueprint $table) {
-            $table->foreignId('order_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
-            $table->foreignId('product_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
+            $table->unsignedBigInteger('order_id');
+            $table->unsignedBigInteger('product_id');
             $table->unique(['order_id', 'product_id']);
             $table->integer('quantity');
-            $table->timestamp('wExpireAt');
+            $table->timestamp('warranty_starts_at')->nullable();
+            $table->timestamp('warranty_expires_at')->nullable();
         });
     }
 

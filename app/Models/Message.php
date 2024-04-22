@@ -10,6 +10,7 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        "description"
+        "description",
+        "ticket_id"
     ];
 }
