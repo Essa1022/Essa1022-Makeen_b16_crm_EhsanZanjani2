@@ -18,21 +18,21 @@ class UserController extends Controller
         return response()->json('logout');
     }
 
-    // // login
-    // public function login(Request $request)
-    // {
-    //     $user = User::select('id', 'phone_number', 'password')
-    //     ->where('phone_number', $request->phone_number)->first();
+    // login
+    public function login(Request $request)
+    {
+        $user = User::select('id', 'phone_number', 'password')
+        ->where('phone_number', $request->phone_number)->first();
 
-    //     if(!$user){
-    //         return response()->json('user not found');
-    //     }
-    //     if(!Hash::check($request->password, $user->password)){
-    //         return response()->json('password incorrect');
-    //     }
-    //     $token = $user->createToken($request->phone_number)->plainTextToken;
-    //     return response()->json(['token' => $token]);
-    // }
+        if(!$user){
+            return response()->json('user not found');
+        }
+        if(!Hash::check($request->password, $user->password)){
+            return response()->json('password incorrect');
+        }
+        $token = $user->createToken($request->phone_number)->plainTextToken;
+        return response()->json(['token' => $token]);
+    }
 
     /**
      * Display a listing of the resource.
