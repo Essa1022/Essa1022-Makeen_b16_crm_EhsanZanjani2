@@ -11,10 +11,11 @@ class Product extends Model
 
     protected $fillable = [
         "product_name",
-        "color",
-        "memory",
-        "part_number",
-        "price"
+        "category_id",
+        "brand_id",
+        "warranty_id",
+        "price",
+        "description"
     ];
 
     public function orders(){

@@ -6,6 +6,7 @@ use App\Http\Requests\Order\CreateOrderRequest;
 use App\Http\Requests\Order\EdiOrdertRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class OrderController extends Controller
 {
@@ -25,8 +26,13 @@ class OrderController extends Controller
     public function store(CreateOrderRequest $request)
     {
         $order = Order::create($request->toArray());
-        $order->products()->attach($request->product_ids);
-        return response()->json($order);
+        $extra = $request->input('extra');
+        $wExpireAt =Carbon::now()->addMonth(12);
+        foreach($extra as $ex){
+            $order->products()->attach($ex['id'],
+            ["quantity" => $ex['quantity'], "wExpireAt" => $wExpireAt]);
+        }
+         return response()->json($order);
     }
 
     /**
@@ -34,7 +40,7 @@ class OrderController extends Controller
      */
     public function show(string $order)
     {
-        $order = Order::find($order);
+        $order = Order::with(['user:id,username', 'products:id,product_name'])->find($order);
         return response()->json($order);
     }
 

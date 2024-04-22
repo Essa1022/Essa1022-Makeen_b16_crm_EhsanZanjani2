@@ -4,6 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
+use function Laravel\Prompts\table;
+
 return new class extends Migration
 {
     /**
@@ -11,13 +13,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('factors', function (Blueprint $table) {
             $table->id();
-            $table->string('product_name');
-            $table->string('color');
-            $table->string('memory');
-            $table->string('part_number');
-            $table->integer('price');
+            $table->integer('amount');
+            $table->integer('status');
+            $table->foreignId('order_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
+            $table->foreignId('user_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('factors');
     }
 };

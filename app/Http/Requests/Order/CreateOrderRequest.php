@@ -23,7 +23,11 @@ class CreateOrderRequest extends FormRequest
     {
         return [
             "user_id" => "required",
-            "address" => "required"
+            "status" => "required",
+            "totalAmount" => "required",
+            "paymentMethod" => "required",
+            "address" => "required",
+            "description" => "nullable"
         ];
     }
 }

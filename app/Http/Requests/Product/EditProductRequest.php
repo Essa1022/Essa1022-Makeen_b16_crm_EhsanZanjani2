@@ -23,10 +23,11 @@ class EditProductRequest extends FormRequest
     {
         return [
             "product_name" => "required",
-            "color" => "required",
-            "memory" => "required",
-            "part_number" => "required",
-            "price" => "required"
+            "category_id" => "required",
+            "brand_id" => "required",
+            "warranty_id" => "nullable",
+            "price" => "required",
+            "description" => "nullable"
         ];
     }
 }

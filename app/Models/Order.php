@@ -11,7 +11,11 @@ class Order extends Model
 
     protected $fillable = [
         "user_id",
-        "address"
+        "status",
+        "totalAmount",
+        "paymentMethod",
+        "address",
+        "description"
     ];
 
     public function user(){
@@ -19,6 +23,7 @@ class Order extends Model
     }
 
     public function products(){
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)
+        ->withPivot('quantity','wExpireAt');
     }
 }

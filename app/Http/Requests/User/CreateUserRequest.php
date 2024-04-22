@@ -25,7 +25,8 @@ class CreateUserRequest extends FormRequest
             'username' => "required",
             "password" => "required|min:4",
             "phone_number" => "required|digits:11|unique:users,phone_number",
-            "email" => "nullable|email"
+            "email" => "nullable|email",
+            "team_id" => "nullable"
         ];
     }
 }

@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
-            $table->integer('status');
-            $table->integer('totalAmount');
-            $table->integer('paymentMethod');
-            $table->string('address');
-            $table->text('description')->nullable();
+            $table->string('subject');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('message_id');
+            $table->timestamp('expire_at');
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('tickets');
     }
 };

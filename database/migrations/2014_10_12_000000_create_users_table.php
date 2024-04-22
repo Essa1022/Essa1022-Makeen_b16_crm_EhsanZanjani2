@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone_number')->unique();
             $table->string('email')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

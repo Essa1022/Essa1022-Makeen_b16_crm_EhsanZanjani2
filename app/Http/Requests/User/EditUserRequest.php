@@ -11,7 +11,7 @@ class EditUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return ture;
+        return true;
     }
 
     /**
@@ -24,8 +24,9 @@ class EditUserRequest extends FormRequest
         return [
             "username" => "required",
             "password" => "required|min:4",
-            "phone_number" => "required|digits:11|unique:users,phone_number". $this->user,
-            "email" => "nullable|email"
+            "phone_number" => "required|digits:11|unique:users,phone_number,". $this->user,
+            "email" => "nullable|email",
+            "team_id" => "nullable"
         ];
     }
 }
