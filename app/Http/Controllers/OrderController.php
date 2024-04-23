@@ -17,13 +17,13 @@ class OrderController extends Controller
     {
         if(!$id)
         {
-            $orders = Order::with(['user:id,username', 'products:id,product_name'])
+            $orders = Order::with(['products:id,product_name'])
             ->orderby('id', 'desc')->paginate(2);
             return response()->json($orders);
         }
         else
         {
-            $order = Order::with(['user:id,username', 'products:id,product_name'])->find($id);
+            $order = Order::with(['products:id,product_name'])->find($id);
             return response()->json($order);
         }
     }
@@ -34,11 +34,11 @@ class OrderController extends Controller
     public function store(CreateOrderRequest $request)
     {
         $order = Order::create($request->toArray());
-        $extra = $request->input('extra');
-        $warranty_expires_at =Carbon::now()->addMonth(12);
-        foreach($extra as $ex){
-            $order->products()->attach($ex['id'],
-            ["quantity" => $ex['quantity'], "warranty_expires_at" => $warranty_expires_at]);
+        $extras = $request->input('extra');
+        $warranty_expires_at = Carbon::now()->addMonth(12);
+        foreach($extras as $extra){
+            $order->products()->attach($extra['id'],
+            ["quantity" => $extra['quantity'], "warranty_expires_at" => $warranty_expires_at]);
         }
          return response()->json($order);
     }
@@ -70,3 +70,4 @@ class OrderController extends Controller
         return response()->json($order);
     }
 }
+

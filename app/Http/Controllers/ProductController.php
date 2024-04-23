@@ -16,7 +16,7 @@ class ProductController extends Controller
     {
         if(!$id)
     {
-        $products = Product::orderby('id', 'desc')->paginate(2);
+        $products = Product::with(['category:id,title', 'brand'])->orderby('id', 'desc')->paginate(2);
         return response()->json($products);
     }
     else
