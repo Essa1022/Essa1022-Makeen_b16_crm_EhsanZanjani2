@@ -19,10 +19,12 @@ use Spatie\Permission\Contracts\Role;
 Route::post('logout', [UserController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
 Route::post('login', [UserController::class, 'login'])->name('login');
 // Route::middleware('auth:sanctum')->group(function(){
+    
      // Route::resource('users', UserController::class);
     // Route::resource('products', ProductController::class);
     // Route::resource('orders', OrderController::class);
-    // Users Rooutes
+
+// Users Rooutes
 Route::group(['prefix' => 'users', 'as' => 'users.'], function(){
     Route::get('index{id?}', [UserController::class, 'index'])->name('index');
     Route::post('store', [UserController::class, 'store'])->name('store');

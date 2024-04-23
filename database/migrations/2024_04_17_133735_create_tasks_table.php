@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->foreignId('team_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
-            $table->foreignId('user_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
+            $table->unsignedBigInteger('taskable_id');
+            $table->string('taskable_type');
             $table->timestamps();
         });
     }

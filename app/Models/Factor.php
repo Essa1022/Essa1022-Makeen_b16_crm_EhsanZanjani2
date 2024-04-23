@@ -10,7 +10,7 @@ class Factor extends Model
     use HasFactory;
 
     protected $fillable = [
-        "amount",
+        "total_amount",
         "status",
         "order_id",
     ];

@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tickets', function (Blueprint $table) {
+        Schema::create('labelables', function (Blueprint $table) {
             $table->id();
-            $table->string('subject');
-            $table->foreignId('user_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
-            $table->timestamp('expires_at');
-            $table->timestamps();
+            $table->foreignId('label_id')->constrained()->cascadeOnDeleteOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('labelable_id');
+            $table->string('labelable_type');
         });
     }
 
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tickets');
+        Schema::dropIfExists('labelables');
     }
 };

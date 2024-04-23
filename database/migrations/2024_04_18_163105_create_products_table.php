@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('product_name');
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('brand_id');
-            $table->unsignedBigInteger('warranty_id')->nullable();
+            $table->foreignId('category_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
+            $table->foreignId('brand_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
+            $table->foreignId('warranty_id')->nullable()->constrained()->restrictOnDelete()->restrictOnUpdate();
             $table->integer('price');
             $table->text('description');
             $table->timestamps();

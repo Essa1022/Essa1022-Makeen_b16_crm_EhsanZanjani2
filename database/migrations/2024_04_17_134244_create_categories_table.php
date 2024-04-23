@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->integer('parent_id');
-            $table->unique(['id', 'parent_id']);
+            $table->unsignedBigInteger('parent_id');
         });
     }
 

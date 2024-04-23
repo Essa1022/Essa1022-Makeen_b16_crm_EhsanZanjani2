@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('warranties', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('expiration');
-            $table->text('description')->nullable();
+            $table->string('username');
+            $table->string('password');
+            $table->string('phone_number')->unique();
+            $table->string('email')->nullable();
+            $table->unsignedBigInteger('team_id')->nullable();
+            $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -25,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('warranties');
+        Schema::dropIfExists('users');
     }
 };
