@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Models\Message;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class MessageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request, string $id = null)
     {
-        if($request->user()->can('read.category'))
+        if($request->user()->can('read.message'))
         {
         if(!$id)
         {
-            $categories = Category::orderby('id', 'desc')->paginate(2);
-            return response()->json($categories);
+            $messages = Message::orderby('id', 'desc')->paginate(2);
+            return response()->json($messages);
         }
         else
         {
-            $category = Category::find($id);
-            return response()->json($category);
+            $message = Message::find($id);
+            return response()->json($message);
         }
         }
         else
@@ -36,10 +36,10 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->can('create.category'))
+        if($request->user()->can('create.message'))
         {
-        $category = Category::create($request->toArray());
-        return response()->json($category);
+        $message = Message::create($request->toArray());
+        return response()->json($message);
         }
         else
         {
@@ -60,15 +60,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if($request->user()->can('read.category'))
+        if($request->user()->can('update.message'))
         {
-        $category = Category::find($id)->update($request->toArray());
-        return response()->json($category);
+        $message = Message::find($id)->update();
+        return response()->json($message);
         }
-        else
-        {
-            return response()->json('User does not have the permission', 403);
-        }
+        return response()->json('User does not have the permission', 403);
     }
 
     /**
@@ -76,14 +73,11 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        if($request->user()->can('read.category'))
+        if($request->user()->can('delete.message'))
         {
-        $category = Category::destroy($id);
-        return response()->json($category);
+        $message = Message::destroy($id);
+        return response()->json($message);
         }
-        else
-        {
-            return response()->json('User does not have the permission', 403);
-        }
+        return response()->json('User does not have the permission', 403);
     }
 }

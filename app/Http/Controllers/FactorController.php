@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
+use App\Models\Factor;
 use Illuminate\Http\Request;
 
-class TeamController extends Controller
+class FactorController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request, string $id = null)
     {
-        if($request->user()->can('read.team'))
+        if($request->user()->can('read.factor'))
         {
-            if(!$id)
-            {
-                $teams = Team::with('labels', 'tasks')->orderby('id', 'desc')->paginate(2);
-                return response()->json($teams);
-            }
-            else
-            {
-                $team = Team::with('labels', 'tasks')->find($id);
-                return response()->json($team);
-            }
+        if(!$id)
+        {
+            $factors = Factor::orderby('id', 'desc')->paginate(2);
+            return response()->json($factors);
+        }
+        else
+        {
+            $factor = Factor::find($id);
+            return response()->json($factor);
+        }
         }
         else
         {
@@ -36,11 +36,10 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->can('create.team'))
+        if($request->user()->can('read.factor'))
         {
-            $team = Team::create($request->toArray());
-            $team->labels()->attach($request->label_ids);
-            return response()->json($team);
+        $factor = Factor::create($request->toArray());
+        return response()->json($factor);
         }
         else
         {
@@ -61,12 +60,10 @@ class TeamController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if($request->user()->can('update.team'))
+        if($request->user()->can('read.factor'))
         {
-            $team = Team::find($id);
-            $team->update($request->toArray());
-            $team->labels()->sync($request->label_ids);
-            return response()->json($team);
+            $factor = Factor::find($id)->update();
+            return response()->json($factor);
         }
         else
         {
@@ -79,10 +76,10 @@ class TeamController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        if($request->user()->can('delete.team'))
+        if($request->user()->can('read.factor'))
         {
-            $team = Team::destroy($id);
-            return response()->json($team);
+        $factor = Factor::destroy($id);
+        return response()->json($factor);
         }
         else
         {

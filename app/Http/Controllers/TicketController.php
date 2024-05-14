@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
+use App\Models\Ticket;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class TeamController extends Controller
+class TicketController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     */
+    * Display a listing of the resource.
+    */
     public function index(Request $request, string $id = null)
     {
-        if($request->user()->can('read.team'))
+        if($request->user()->can('read.ticket'))
         {
             if(!$id)
             {
-                $teams = Team::with('labels', 'tasks')->orderby('id', 'desc')->paginate(2);
-                return response()->json($teams);
+                $tickets = Ticket::with('messages')->orderby('id', 'desc')->paginate(2);
+                return response()->json($tickets);
             }
             else
             {
-                $team = Team::with('labels', 'tasks')->find($id);
-                return response()->json($team);
+                $ticket = Ticket::with('messages')->find($id);
+                return response()->json($ticket);
             }
         }
         else
@@ -36,11 +37,12 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->can('create.team'))
+        if($request->user()->can('create.ticket'))
         {
-            $team = Team::create($request->toArray());
-            $team->labels()->attach($request->label_ids);
-            return response()->json($team);
+            $ticket = Ticket::create($request->merge([
+                'expires_at' => Carbon::now()->addDay(2)
+            ])->toArray());
+            return response()->json($ticket);
         }
         else
         {
@@ -61,12 +63,10 @@ class TeamController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if($request->user()->can('update.team'))
+        if($request->user()->can('update.ticket'))
         {
-            $team = Team::find($id);
-            $team->update($request->toArray());
-            $team->labels()->sync($request->label_ids);
-            return response()->json($team);
+        $ticket = Ticket::find($id)->update($request->toArray());
+        return response()->json($ticket);
         }
         else
         {
@@ -79,10 +79,10 @@ class TeamController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        if($request->user()->can('delete.team'))
+        if($request->user()->can('delete.ticket'))
         {
-            $team = Team::destroy($id);
-            return response()->json($team);
+        $ticket = Ticket::destroy($id);
+        return response()->json($ticket);
         }
         else
         {

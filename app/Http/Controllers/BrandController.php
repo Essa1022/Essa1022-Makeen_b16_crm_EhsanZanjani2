@@ -10,17 +10,24 @@ class BrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(string $id = null)
+    public function index(Request $request, string $id = null)
     {
-        if(!$id)
+        if($request->user()->can('read.brand'))
         {
-            $brands = Brand::orderby('id', 'desc')->paginate(2);
-            return response()->json($brands);
+            if(!$id)
+            {
+                $brands = Brand::orderby('id', 'desc')->paginate(2);
+                return response()->json($brands);
+            }
+            else
+            {
+                $brand = Brand::find($id);
+                return response()->json($brand);
+            }
         }
         else
         {
-            $brand = Brand::find($id);
-            return response()->json($brand);
+            return response()->json('User does not have the permission', 403);
         }
     }
 
@@ -29,8 +36,15 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
+        if($request->user()->can('create.brand'))
+        {
         $brand = Brand::create($request->toArray());
         return response()->json($brand);
+        }
+        else
+        {
+            return response()->json('User does not have the permission', 403);
+        }
     }
 
     /**
@@ -46,16 +60,30 @@ class BrandController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        if($request->user()->can('read.brand'))
+        {
         $brand = Brand::find($id)->update($request->toArray());
         return response()->json($brand);
+        }
+        else
+        {
+            return response()->json('User does not have the permission', 403);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, string $id)
     {
+        if($request->user()->can('read.brand'))
+        {
         $brand = Brand::destroy($id);
         return response()->json($brand);
+        }
+        else
+        {
+            return response()->json('User does not have the permission', 403);
+        }
     }
 }

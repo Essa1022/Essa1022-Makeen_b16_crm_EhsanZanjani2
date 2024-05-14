@@ -2,27 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
+use App\Models\Task;
 use Illuminate\Http\Request;
 
-class TeamController extends Controller
+class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request, string $id = null)
     {
-        if($request->user()->can('read.team'))
+        if ($request->user()->can('read.task'))
         {
-            if(!$id)
+            if (!$id)
             {
-                $teams = Team::with('labels', 'tasks')->orderby('id', 'desc')->paginate(2);
-                return response()->json($teams);
+                $tasks = Task::with('taskable')->orderby('id', 'desc')->paginate(2);
+                return response()->json($tasks);
             }
             else
             {
-                $team = Team::with('labels', 'tasks')->find($id);
-                return response()->json($team);
+                $task = Task::with('taskable')->find($id);
+                return response()->json($task);
             }
         }
         else
@@ -36,11 +36,10 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->user()->can('create.team'))
+        if ($request->user()->can('create.task'))
         {
-            $team = Team::create($request->toArray());
-            $team->labels()->attach($request->label_ids);
-            return response()->json($team);
+            $task = Task::create($request->toArray());
+            return response()->json($task);
         }
         else
         {
@@ -61,12 +60,10 @@ class TeamController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        if($request->user()->can('update.team'))
+        if ($request->user()->can('update.task'))
         {
-            $team = Team::find($id);
-            $team->update($request->toArray());
-            $team->labels()->sync($request->label_ids);
-            return response()->json($team);
+            $task = Task::find($id)->update($request->toArray());
+            return response()->json($task);
         }
         else
         {
@@ -79,10 +76,10 @@ class TeamController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        if($request->user()->can('delete.team'))
+        if ($request->user()->can('delete.team'))
         {
-            $team = Team::destroy($id);
-            return response()->json($team);
+            $task = Task::destroy($id);
+            return response()->json($task);
         }
         else
         {

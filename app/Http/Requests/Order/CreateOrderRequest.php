@@ -24,8 +24,7 @@ class CreateOrderRequest extends FormRequest
         return [
             "user_id" => "required",
             "status" => "required",
-            "totalAmount" => "required",
-            "paymentMethod" => "required",
+            "payment_method" => "required|in:online, cash on delivery",
             "address" => "required",
             "description" => "nullable"
         ];
