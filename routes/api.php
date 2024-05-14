@@ -2,12 +2,17 @@
 
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FactorController;
+use App\Http\Controllers\LabelController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\TicketController;
+use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,10 +23,10 @@ use Spatie\Permission\Contracts\Role;
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "api" middleware group. Make something great!
 |
-*/
+// */
 Route::post('logout', [UserController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
 Route::post('login', [UserController::class, 'login'])->name('login');
-// Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function(){
 
     // Route::resource('users', UserController::class);
     // Route::resource('products', ProductController::class);
@@ -38,7 +43,7 @@ Route::group(['prefix' => 'teams', 'as' => 'teams.'], function () {
 // Users Routes
 Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
     Route::get('index/{id?}', [UserController::class, 'index'])->name('index');
-    Route::post('store', [UserController::class, 'store'])->name('store')->withoutMiddleware('auth:sanctum');
+    Route::post('store', [UserController::class, 'store'])->name('store');
     Route::put('update/{id}', [UserController::class, 'update'])->name('update');
     Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
 });
@@ -105,6 +110,7 @@ Route::group(['prefix' => 'labels', 'as' => 'labels.'], function () {
     Route::post('store', [LabelController::class, 'store'])->name('store');
     Route::put('update/{id}', [LabelController::class, 'update'])->name('update');
     Route::delete('destroy/{id}', [LabelController::class, 'destroy'])->name('destroy');
+    Route::post('sync/{modelType}/{modelId}', [LabelController::class, 'sync'] )->name('sync');
 });
 
 // Tickets Routes
@@ -123,4 +129,4 @@ Route::group(['prefix' => 'messages', 'as' => 'messages.'], function () {
     Route::delete('destroy/{id}', [MessageController::class, 'destroy'])->name('destroy');
 });
 
-// });
+});

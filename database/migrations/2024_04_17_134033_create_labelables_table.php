@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('labelables', function (Blueprint $table) {
             $table->id();
             $table->foreignId('label_id')->constrained()->cascadeOnDeleteOnDelete()->cascadeOnUpdate();
-            $table->unsignedBigInteger('labelable_id');
-            $table->string('labelable_type');
+            $table->morphs('labelable');
         });
     }
 

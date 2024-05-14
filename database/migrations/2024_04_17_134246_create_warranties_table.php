@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('warranties', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('expiration');
+            $table->integer('expiration');
             $table->text('description')->nullable();
         });
     }

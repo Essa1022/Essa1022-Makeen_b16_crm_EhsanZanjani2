@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->restrictOnDelete()->restrictOnUpdate();
             $table->integer('status');
             $table->integer('total_amount');
-            $table->integer('payment_method');
+            $table->enum('payment_method', ['online', 'cash on delivery']);
             $table->string('address');
             $table->text('description')->nullable();
             $table->timestamps();

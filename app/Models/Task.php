@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Task extends Model
 {
@@ -17,13 +18,8 @@ class Task extends Model
         "taskable_type"
     ];
 
-    public function user(): BelongsTo
+    public function taskable(): MorphTo
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function team(): BelongsTo
-    {
-        return $this->belongsTo(Team::class);
+        return $this->morphTo();
     }
 }

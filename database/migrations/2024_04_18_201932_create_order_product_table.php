@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('order_product', function (Blueprint $table) {
             $table->foreignId('order_id')->constrained();
             $table->foreignId('product_id')->constrained();
-            $table->unique(['order_id', 'product_id']);
             $table->integer('quantity');
             $table->timestamp('warranty_starts_at')->nullable();
             $table->timestamp('warranty_expires_at')->nullable();

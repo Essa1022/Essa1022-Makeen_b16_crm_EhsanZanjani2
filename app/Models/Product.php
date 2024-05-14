@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        "image_path",
         "product_name",
         "category_id",
         "brand_id",
@@ -24,7 +26,7 @@ class Product extends Model
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class)
-        ->withPivot('quantity','warrant_expires_at');
+        ->withPivot('quantity','warranty_expires_at', 'warranty_expires_at');
     }
 
     public function brand(): BelongsTo
@@ -35,5 +37,15 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function warranties(): BelongsToMany
+    {
+        return $this->belongsToMany(Warranty::class);
+    }
+
+    public function labels(): MorphToMany
+    {
+        return $this->morphToMany(Label::class, 'labelable');
     }
 }

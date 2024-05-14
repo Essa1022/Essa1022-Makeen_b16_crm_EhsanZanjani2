@@ -3,9 +3,16 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -58,10 +65,23 @@ class User extends Authenticatable
         return $this->belongsTo(Team::class);
     }
 
-    public function tasks(): HasMany
+    public function tasks(): MorphMany
     {
-        return $this->hasMany(Task::class);
+        return $this->morphMany(Task::class, 'taskable');
     }
 
-    
+    public function ticket(): HasOne
+    {
+        return $this->hasOne(Ticket::class);
+    }
+
+    public function labels(): MorphToMany
+    {
+        return $this->morphToMany(Label::class, 'labelable');
+    }
+
+    public function factors(): HasManyThrough
+    {
+        return $this->hasManyThrough(Factor::class, Order::class);
+    }
 }
