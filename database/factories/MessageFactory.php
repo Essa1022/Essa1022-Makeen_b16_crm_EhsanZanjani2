@@ -18,8 +18,7 @@ class MessageFactory extends Factory
     public function definition(): array
     {
         return [
-            'description' => fake()->text(50),
-            'ticket_id' => Ticket::factory()
+            'description' => fake()->text(50)
         ];
     }
 }

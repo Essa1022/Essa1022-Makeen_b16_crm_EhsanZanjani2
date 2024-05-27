@@ -14,14 +14,14 @@ class Label extends Model
         "name"
     ];
 
-    public function users(): MorphToMany
-    {
-        return $this->morphedByMany(User::class, 'labelable');
-    }
-
     public function teams(): MorphToMany
     {
         return $this->morphedByMany(Team::class, 'labelable');
+    }
+    
+    public function users(): MorphToMany
+    {
+        return $this->morphedByMany(User::class, 'labelable');
     }
 
     public function products(): MorphToMany

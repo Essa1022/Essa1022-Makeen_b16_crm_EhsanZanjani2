@@ -42,9 +42,6 @@ class OrderController extends Controller
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
-        }
-        {
             if(!$id)
                 {
                     $orders = Order::where('user_id', $request->user()->id)->with(['products:id,product_name'])
@@ -53,7 +50,7 @@ class OrderController extends Controller
                 }
             else
             {
-                return response()->json('Order not found', 404);
+                return response()->json('User does not have the permission', 403);
             }
         }
     }
@@ -73,7 +70,8 @@ class OrderController extends Controller
             {
                 $total += Product::find($product->id)->price * $product->quantity;
             }
-            $order = Order::create($request->merge(["total_amount" => $total])->toArray());
+            $order = Order::create($request->merge(["total_amount" => $total,
+             "status" => 1])->toArray());
             foreach($products as $product)
             {
                 $product = Product::find($product->id);
@@ -130,8 +128,7 @@ class OrderController extends Controller
     {
         if($request->user()->can('delete.order'))
         {
-        $order = Order::destroy($id);
-        return response()->json($order);
+            Order::destroy($id);
         }
         else
         {

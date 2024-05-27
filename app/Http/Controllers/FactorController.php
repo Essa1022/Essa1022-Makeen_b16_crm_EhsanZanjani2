@@ -78,8 +78,7 @@ class FactorController extends Controller
     {
         if($request->user()->can('read.factor'))
         {
-        $factor = Factor::destroy($id);
-        return response()->json($factor);
+            Factor::destroy($id);
         }
         else
         {

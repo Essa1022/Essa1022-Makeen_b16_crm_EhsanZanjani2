@@ -17,7 +17,7 @@ class LabelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->unique()->randomElement(['new', 'off', 'sold out']),
+            'name' => fake()->unique()->randomElement(['new', 'off', 'sold out'])
         ];
     }
 }

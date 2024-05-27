@@ -78,8 +78,7 @@ class CategoryController extends Controller
     {
         if($request->user()->can('read.category'))
         {
-        $category = Category::destroy($id);
-        return response()->json($category);
+            Category::destroy($id);
         }
         else
         {

@@ -16,7 +16,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $user->currentAccessToken()->delete();
-        return response()->json('logout');
+        return response()->json('logged out');
     }
 
     // login
@@ -127,8 +127,7 @@ class UserController extends Controller
     {
         if($request->user()->can('delete.user') || $request->user()->id == $id)
         {
-            $user = User::destroy($id);
-            return response()->json($user);
+            User::destroy($id);
         }
         else
         {

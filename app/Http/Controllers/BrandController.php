@@ -78,8 +78,7 @@ class BrandController extends Controller
     {
         if($request->user()->can('read.brand'))
         {
-        $brand = Brand::destroy($id);
-        return response()->json($brand);
+            Brand::destroy($id);
         }
         else
         {

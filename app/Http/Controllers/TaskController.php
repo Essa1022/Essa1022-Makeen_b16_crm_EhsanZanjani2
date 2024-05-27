@@ -78,8 +78,7 @@ class TaskController extends Controller
     {
         if ($request->user()->can('delete.team'))
         {
-            $task = Task::destroy($id);
-            return response()->json($task);
+            Task::destroy($id);
         }
         else
         {

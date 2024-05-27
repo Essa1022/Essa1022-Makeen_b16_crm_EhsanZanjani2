@@ -19,8 +19,7 @@ class FactorFactory extends Factory
     {
         return [
             'total_amount' => fake()->numberBetween(50,1000),
-            'status' => fake()->randomElement([1,2]),
-            'order_id' => Order::factory(),
+            'status' => fake()->randomElement([1,2])
         ];
     }
 }

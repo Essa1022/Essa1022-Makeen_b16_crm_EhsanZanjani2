@@ -18,7 +18,6 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
             'status' => 1,
             'total_amount' =>round( fake()->numberBetween(50, 1000),-1),
             'payment_method' => fake()->randomElement(['online', 'cash on delivery']),

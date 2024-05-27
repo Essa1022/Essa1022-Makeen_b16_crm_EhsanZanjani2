@@ -20,10 +20,8 @@ class ProductFactory extends Factory
     {
         return [
             'product_name' => fake()->word(),
-            'category_id' => Category::all('id')->random(),
-            'brand_id' => Brand::all('id')->random(),
             'price' => round(fake()->numberBetween(10,500),-1),
-            'description' => fake()->text(50),
+            'description' => fake()->text(50)
         ];
     }
 }

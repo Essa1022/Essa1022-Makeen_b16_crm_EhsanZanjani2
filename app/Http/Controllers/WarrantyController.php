@@ -16,12 +16,12 @@ class WarrantyController extends Controller
         {
             if(!$id)
             {
-                $warranties = Warranty::with('messages')->orderby('id', 'desc')->paginate(2);
+                $warranties = Warranty::orderby('id', 'desc')->paginate(2);
                 return response()->json($warranties);
             }
             else
             {
-                $warranty = Warranty::with('messages')->find($id);
+                $warranty = Warranty::find($id);
                 return response()->json($warranty);
             }
         }
@@ -78,8 +78,7 @@ class WarrantyController extends Controller
     {
         if($request->user()->can('delete.warranty'))
         {
-            $warranty = Warranty::destroy($id);
-            return response()->json($warranty);
+            Warranty::destroy($id);
         }
         else
         {

@@ -21,7 +21,6 @@ class TicketFactory extends Factory
     {
         return [
             'subject' => fake()->word(),
-            'user_id' => User::factory(),
             'expires_at' => Carbon::now()->addDay(2)
         ];
     }

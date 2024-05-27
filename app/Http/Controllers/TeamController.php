@@ -81,8 +81,7 @@ class TeamController extends Controller
     {
         if($request->user()->can('delete.team'))
         {
-            $team = Team::destroy($id);
-            return response()->json($team);
+            Team::destroy($id);
         }
         else
         {

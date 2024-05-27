@@ -81,8 +81,7 @@ class TicketController extends Controller
     {
         if($request->user()->can('delete.ticket'))
         {
-        $ticket = Ticket::destroy($id);
-        return response()->json($ticket);
+            Ticket::destroy($id);
         }
         else
         {

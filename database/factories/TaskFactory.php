@@ -20,18 +20,7 @@ class TaskFactory extends Factory
     {
         return [
             'title' => $this->faker->title(),
-            'description' => $this->faker->text(50),
-            'taskable_type' => $this->faker->randomElement([User::class, Team::class]),
-            'taskable_id' => function () {
-                if ($this->faker->randomElement([User::class, Team::class]) === User::class)
-                {
-                    return User::all()->random()->id;
-                }
-                else
-                {
-                    return Team::all()->random()->id;
-                }
-            },
+            'description' => $this->faker->text(50)
         ];
     }
 }

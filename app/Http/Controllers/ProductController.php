@@ -8,6 +8,7 @@ use App\Models\Product;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 class ProductController extends Controller
 {
@@ -24,10 +25,11 @@ class ProductController extends Controller
                 $products = $products->with(['category:id,title', 'brand', 'warranties', 'labels']);
                 if($request->most_sold)
                 {
-                    $products = $products->withCount('orders');
-                    $products = $products->orderBy('orders_count', 'desc');
-                    $products = $products->skip(0)->take(3);
-                    $products = $products->get();
+                    $products = $products
+                    ->withCount('orders')
+                    ->orderBy('orders_count', 'desc')
+                    ->skip(0)->take(3)
+                    ->get();
                     return response()->json($products);
                 }
                 $products = $products->orderby('id', 'desc')->paginate(5);
@@ -52,8 +54,7 @@ class ProductController extends Controller
     {
         if($request->user()->can('create.product'))
         {
-            $path = $request->file('image_path')->store('public/products');
-            $product = Product::create($request->merge(["image_path" => $path])->toArray());
+            $product = Product::create($request->toArray());
             $product->warranties()->attach($request->warranty_ids);
             $product->labels()->attach($request->label_ids);
             return response()->json($product);
@@ -96,8 +97,7 @@ class ProductController extends Controller
     {
         if($request->user()->can('delete.product'))
         {
-            $product = Product::destroy($id);
-            return response()->json($product);
+            Product::destroy($id);
         }
         else
         {

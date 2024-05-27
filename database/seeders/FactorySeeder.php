@@ -48,7 +48,7 @@ class FactorySeeder extends Seeder
         // create 9 Users for random Teams and Ticket
         for($i =0; $i<9; $i++)
         {
-            $teams = Team::all()->random();
+            $teams = Team::inRandomOrder()->first();
             $users = User::factory()->for($teams)->create();
             $users->assignRole('user');
         }
@@ -63,33 +63,31 @@ class FactorySeeder extends Seeder
         // create 10 Products for random Categories, Brands and Warranties and Labels
         for($i =0; $i<10; $i++)
         {
-            $brands = Brand::all()->random();
-            $categories = Category::all()->random();
-            $warranties = Warranty::all()->random();
-            $labels = Label::all()->random();
+            $brands = Brand::inRandomOrder()->first();
+            $categories = Category::inRandomOrder()->first();
+            $warranties = Warranty::inRandomOrder()->first();
+            $labels = Label::inRandomOrder()->first();
             Product::factory()->for($categories)->for($brands)->hasAttached($warranties)->hasAttached($labels)->create();
         }
 
         // create 20 Factors for Orders for random Users and attach random Product
         for($i = 0; $i < 20; $i++)
         {
-            $users = User::all()->random();
-            $products = Product::all()->random();
+            $users = User::inRandomOrder()->first();
+            $products = Product::inRandomOrder()->first();
             $orders = Order::factory()->for($users)->hasAttached($products, ['quantity' => 1])->create();
             Factor::factory()->for($orders)->create();
         }
 
         // create 10 Tasks for random Users
-        $users = User::all();
-        $teams = Team::all();
         for ($i = 0; $i < 10; $i++)
         {
             // $taskable_type = [User::class, Team::class][array_rand([User::class, Team::class])];
             $taskable_type = fake()->randomElement([User::class, Team::class]);
             if ($taskable_type === User::class) {
-                $taskable = $users->random();
+                $taskable = User::inRandomOrder()->first();
             } else {
-                $taskable = $teams->random();
+                $taskable = Team::inRandomOrder()->first();
             }
             Task::factory()->for($taskable, 'taskable')->create();
         }
@@ -97,7 +95,7 @@ class FactorySeeder extends Seeder
         // create 10 Messages for random Tickets
         for ($i = 0; $i < 10; $i++)
         {
-            $tickets = Ticket::all()->random();
+            $tickets = Ticket::inRandomOrder()->first();
             Message::factory()->for($tickets)->create();
         }
     }

@@ -118,8 +118,7 @@ class LabelController extends Controller
     {
         if($request->user()->can('delete.label'))
         {
-        $label = Label::destroy($id);
-        return response()->json($label);
+            Label::destroy($id);
         }
         else
         {

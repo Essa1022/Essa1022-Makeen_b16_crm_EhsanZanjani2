@@ -75,8 +75,7 @@ class MessageController extends Controller
     {
         if($request->user()->can('delete.message'))
         {
-        $message = Message::destroy($id);
-        return response()->json($message);
+            Message::destroy($id);
         }
         return response()->json('User does not have the permission', 403);
     }

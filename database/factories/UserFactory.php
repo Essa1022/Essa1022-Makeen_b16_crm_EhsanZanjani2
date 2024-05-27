@@ -29,8 +29,7 @@ class UserFactory extends Factory
             'password' => Hash::make('1234'),
             'phone_number' =>'091'. fake()->unique()->randomNumber(8, true),
             'email' => fake()->safeEmail(),
-            'remember_token' => Str::random(10),
-            'team_id' => Team::all('id')->random(),
+            'remember_token' => Str::random(10)
         ];
     }
 
