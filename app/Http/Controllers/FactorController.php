@@ -5,84 +5,76 @@ namespace App\Http\Controllers;
 use App\Models\Factor;
 use Illuminate\Http\Request;
 
-class FactorController extends Controller
+class FactorController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request, string $id = null)
+
+    // Factors index
+    public function index(Request $request)
     {
         if($request->user()->can('read.factor'))
         {
-        if(!$id)
-        {
-            $factors = Factor::orderby('id', 'desc')->paginate(2);
-            return response()->json($factors);
+            $factors = Factor::orderby('id', 'desc')->paginate(5);
+            return $this->success_response($factors);
         }
         else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Show specific Factor
+    public function show(Request $request, string $id)
+    {
+        if($request->user()->can('read.factor'))
         {
             $factor = Factor::find($id);
-            return response()->json($factor);
-        }
+            return $this->success_response($factor);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store a new Factor
     public function store(Request $request)
     {
-        if($request->user()->can('read.factor'))
+        if($request->user()->can('create.factor'))
         {
         $factor = Factor::create($request->toArray());
-        return response()->json($factor);
+        return $this->success_response($factor);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $id)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update Factor
     public function update(Request $request, string $id)
     {
-        if($request->user()->can('read.factor'))
+        if($request->user()->can('update.factor'))
         {
             $factor = Factor::find($id)->update();
-            return response()->json($factor);
+            return $this->success_response($factor);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Destroy Factors
     public function destroy(Request $request, string $id)
     {
-        if($request->user()->can('read.factor'))
+        if($request->user()->can('delete.factor'))
         {
             Factor::destroy($id);
+            return $this->delete_response();
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 }

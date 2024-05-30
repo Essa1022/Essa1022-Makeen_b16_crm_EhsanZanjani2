@@ -5,84 +5,76 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 
-class BrandController extends Controller
+class BrandController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request, string $id = null)
+
+    //  Brands index
+    public function index(Request $request)
     {
         if($request->user()->can('read.brand'))
         {
-            if(!$id)
-            {
-                $brands = Brand::orderby('id', 'desc')->paginate(2);
-                return response()->json($brands);
-            }
-            else
-            {
-                $brand = Brand::find($id);
-                return response()->json($brand);
-            }
+            $brands = Brand::orderby('id', 'desc')->paginate(5);
+            return $this->success_response($brands);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Show specific Brand
+    public function show(Request $request, string $id)
+    {
+        if($request->user()->can('read.brand'))
+        {
+            $brand = Brand::find($id);
+            return $this->success_response($brand);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Store a new Brand
     public function store(Request $request)
     {
         if($request->user()->can('create.brand'))
         {
         $brand = Brand::create($request->toArray());
-        return response()->json($brand);
+        return $this->success_response($brand);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $id)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update Brand
     public function update(Request $request, string $id)
     {
-        if($request->user()->can('read.brand'))
+        if($request->user()->can('update.brand'))
         {
         $brand = Brand::find($id)->update($request->toArray());
-        return response()->json($brand);
+        return $this->success_response($brand);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Destroy Brands
     public function destroy(Request $request, string $id)
     {
-        if($request->user()->can('read.brand'))
+        if($request->user()->can('delete.brand'))
         {
             Brand::destroy($id);
+            return $this->delete_response();
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 }

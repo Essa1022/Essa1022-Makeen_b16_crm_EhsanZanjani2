@@ -12,6 +12,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([RoleSeeder::class,CategorySeeder::class, FactorySeeder::class]);
+        $this->call([RoleSeeder::class,CategorySeeder::class, FactorySeeder::class, CityProvinceSeeder::class]);
     }
 }

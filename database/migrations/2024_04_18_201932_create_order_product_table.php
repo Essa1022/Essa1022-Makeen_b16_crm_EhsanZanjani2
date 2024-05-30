@@ -15,8 +15,7 @@ return new class extends Migration
             $table->foreignId('order_id')->constrained();
             $table->foreignId('product_id')->constrained();
             $table->integer('quantity');
-            $table->timestamp('warranty_starts_at')->nullable();
-            $table->timestamp('warranty_expires_at')->nullable();
+            $table->json('warranties')->nullable();
         });
     }
 

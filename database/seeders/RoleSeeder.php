@@ -16,6 +16,14 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        Permission::create(['name' => 'read.permission']);
+        Permission::create(['name' => 'give.permission']);
+        // Role Permissions
+        Permission::create(['name' => 'create.role']);
+        Permission::create(['name' => 'read.role']);
+        Permission::create(['name' => 'update.role']);
+        Permission::create(['name' => 'delete.role']);
+        Permission::create(['name' => 'give.role']);
         // User Permissions
         Permission::create(['name' => 'create.user']);
         Permission::create(['name' => 'read.user']);
@@ -77,11 +85,11 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'read.brand']);
         Permission::create(['name' => 'update.brand']);
         Permission::create(['name' => 'delete.brand']);
-        //Role Permissions
-        Permission::create(['name' => 'create.role']);
-        Permission::create(['name' => 'read.role']);
-        Permission::create(['name' => 'update.role']);
-        Permission::create(['name' => 'delete.role']);
+        //Media Permissions
+        Permission::create(['name' => 'create.media']);
+        Permission::create(['name' => 'read.media']);
+        Permission::create(['name' => 'update.media']);
+        Permission::create(['name' => 'delete.media']);
 
         // Super Admin Role
         $super_admin = Role::where('name', 'super_admin')->exists();

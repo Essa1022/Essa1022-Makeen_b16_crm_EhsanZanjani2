@@ -9,18 +9,16 @@ use App\Models\Product;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Spatie\FlareClient\Api;
 
-class OrderController extends Controller
+class OrderController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request, string $id = null)
+
+    // Orders index
+    public function index(Request $request)
     {
         if($request->user()->can('read.order'))
         {
-            if(!$id)
-            {
                 $phone_number = $request->phone_number;
                 $orders = new Order();
                 $orders = $orders->with(['products:id,product_name']);
@@ -32,107 +30,95 @@ class OrderController extends Controller
                     });
                 }
                 $orders = $orders->orderby('id', 'desc')->paginate(10);
-                return response()->json($orders);
-            }
-            else
-            {
-                $order = Order::with(['products:id,product_name'])->find($id);
-                return response()->json($order);
-            }
+                return $this->success_response($orders);
         }
         else
         {
-            if(!$id)
-                {
-                    $orders = Order::where('user_id', $request->user()->id)->with(['products:id,product_name'])
-                    ->orderby('id', 'desc')->paginate(2);
-                    return response()->json($orders);
-                }
-            else
-            {
-                return response()->json('User does not have the permission', 403);
-            }
+                $orders = Order::where('user_id', $request->user()->id)->with(['products:id,product_name'])
+                ->orderby('id', 'desc')->paginate(2);
+                return $this->success_response($orders);
+        }
+        return $this->unauthorized_response();
+    }
+
+    // Show specific Order
+    public function show(Request $request, $id)
+    {
+        if($request->user()->can('read.order'))
+        {
+            $order = Order::with(['products:id,product_name'])->find($id);
+            return $this->success_response($order);
+        }
+        else
+        {
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Store a new Order
     public function store(CreateOrderRequest $request)
     {
-        if($request->user()->can('create.order'))
-        {
+        if ($request->user()->can('create.order')) {
             $products = array_map(function ($product) {
-                return is_array($product)? (object) $product : $product;
+                return is_array($product) ? (object) $product : $product;
             }, $request->input('products'));
+
             $total = 0;
-            foreach($products as $product)
-            {
+            foreach ($products as $product) {
                 $total += Product::find($product->id)->price * $product->quantity;
             }
-            $order = Order::create($request->merge(["total_amount" => $total,
-             "status" => 1])->toArray());
-            foreach($products as $product)
-            {
-                $product = Product::find($product->id);
-                $warranties = $product->warranties;
-                foreach($warranties as $warranty)
-                {
-                    $warranty_expires_at = Carbon::now()->addDays($warranty->expiration);
-                }
 
-                foreach($products as $product)
-                {
-                    $order->products()->attach($product->id,
-                    ["quantity" => $product->quantity, "warranty_expires_at" => $warranty_expires_at,
-                    "warranty_starts_at" => Carbon::now()]);
-                }
+            $order = Order::create($request->merge([
+                "total_amount" => $total,
+                "status" => 1
+            ])->toArray());
+
+            foreach ($products as $productItem) {
+                $product = Product::find($productItem->id);
+                $warranties = collect($product->warranties)->map(function ($warranty) {
+                    return [
+                        'warranty_id' => $warranty['id'],
+                        'warranty_starts_at' => Carbon::now(),
+                        'warranty_expires_at' => Carbon::now()->addDays($warranty['expiration'])
+                    ];
+                });
+                $order->products()->attach($product->id, [
+                    "quantity" => $productItem->quantity,
+                    'warranties' => $warranties->toJson()
+                ]);
             }
-            return response()->json($order);
-        }
-        else
-        {
-            return response()->json('User does not have the permission', 403);
+
+            return $this->success_response($order);
+        } else {
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $order)
-    // {
-    //     $order = Order::with(['user:id,username', 'products:id,product_name'])->find($order);
-    //     return response()->json($order);
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update Order
     public function update(EdiOrdertRequest $request, string $id)
     {
         if($request->user()->can('update.order'))
         {
         $order = Order::find($id)->update($request->toArray());
-        return response()->json($order);
+        return $this->success_response($order);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Destroy Orders
     public function destroy(Request $request, string $id)
     {
         if($request->user()->can('delete.order'))
         {
             Order::destroy($id);
+            return $this->delete_response();
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 }

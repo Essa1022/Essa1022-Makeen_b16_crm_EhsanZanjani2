@@ -5,84 +5,76 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
-class TaskController extends Controller
+class TaskController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request, string $id = null)
+
+    // Tasks index
+    public function index(Request $request)
     {
         if ($request->user()->can('read.task'))
         {
-            if (!$id)
-            {
                 $tasks = Task::with('taskable')->orderby('id', 'desc')->paginate(2);
-                return response()->json($tasks);
-            }
-            else
-            {
-                $task = Task::with('taskable')->find($id);
-                return response()->json($task);
-            }
+                return $this->success_response($tasks);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Show specific Task
+    public function show(Request $request, $id)
+    {
+        if ($request->user()->can('read.task'))
+        {
+            $task = Task::with('taskable')->find($id);
+            return $this->success_response($task);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Store a new Task
     public function store(Request $request)
     {
         if ($request->user()->can('create.task'))
         {
             $task = Task::create($request->toArray());
-            return response()->json($task);
+            return $this->success_response($task);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $id)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update Task
     public function update(Request $request, string $id)
     {
         if ($request->user()->can('update.task'))
         {
             $task = Task::find($id)->update($request->toArray());
-            return response()->json($task);
+            return $this->success_response($task);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Destroy Tasks
     public function destroy(Request $request, string $id)
     {
         if ($request->user()->can('delete.team'))
         {
             Task::destroy($id);
+            return $this->delete_response();
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 }

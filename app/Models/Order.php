@@ -30,7 +30,7 @@ class Order extends Model
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class)
-        ->withPivot('quantity','warranty_expires_at', 'warranty_starts_at');
+        ->withPivot('quantity','warranties');
     }
 
     public function factor(): HasOne

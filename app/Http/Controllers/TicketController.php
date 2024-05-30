@@ -6,35 +6,38 @@ use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class TicketController extends Controller
+class TicketController extends ApiController
 {
-    /**
-    * Display a listing of the resource.
-    */
-    public function index(Request $request, string $id = null)
+
+    // Tickets index
+    public function index(Request $request)
     {
         if($request->user()->can('read.ticket'))
         {
-            if(!$id)
-            {
                 $tickets = Ticket::with('messages')->orderby('id', 'desc')->paginate(2);
-                return response()->json($tickets);
-            }
-            else
-            {
-                $ticket = Ticket::with('messages')->find($id);
-                return response()->json($ticket);
-            }
+                return $this->success_response($tickets);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Show specific Ticket
+    public function show(Request $request, $id)
+    {
+        if ($request->user()->can('read.ticket'))
+        {
+            $ticket = Ticket::with('messages')->find($id);
+            return $this->success_response($ticket);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Store a new Ticket
     public function store(Request $request)
     {
         if($request->user()->can('create.ticket'))
@@ -42,50 +45,39 @@ class TicketController extends Controller
             $ticket = Ticket::create($request->merge([
                 'expires_at' => Carbon::now()->addDay(2)
             ])->toArray());
-            return response()->json($ticket);
+            return $this->success_response($ticket);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $id)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update Ticket
     public function update(Request $request, string $id)
     {
         if($request->user()->can('update.ticket'))
         {
         $ticket = Ticket::find($id)->update($request->toArray());
-        return response()->json($ticket);
+        return $this->success_response($ticket);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Destroy Tickets
     public function destroy(Request $request, string $id)
     {
         if($request->user()->can('delete.ticket'))
         {
             Ticket::destroy($id);
+            return $this->delete_response();
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 }

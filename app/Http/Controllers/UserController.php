@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     // logout
     public function logout()
@@ -35,15 +35,11 @@ class UserController extends Controller
         return response()->json(['token' => $token]);
     }
 
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request, string $id = null)
+    // Users index
+    public function index(Request $request)
     {
-        if($request->user()->can('read.user') || $request->user()->id == $id)
+        if($request->user()->can('read.user'))
         {
-            if (!$id)
-            {
                 $users = new User();
                 $users = $users->with(['orders', 'team:id,name','tasks:id,title', 'ticket:id,subject', 'labels' ]);
                 if ($request->has_orders)
@@ -59,23 +55,29 @@ class UserController extends Controller
                     $users = $users->withCount('orders');
                 }
                 $users = $users->orderBy('id', 'desc')->paginate(10);
-                return response()->json($users);
-            }
-            else
-            {
-                $user = User::with(['orders', 'team:id,name','tasks:id,title', 'ticket:id,subject', 'labels' ])->find($id);
-                return response()->json($user);
-            }
+                return $this->success_response($users);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Show specific User
+    public function show(Request $request, $id)
+    {
+        if ($request->user()->can('read.user') || $request->user()->id == $id)
+        {
+            $user = User::with(['orders', 'team:id,name','tasks:id,title', 'ticket:id,subject', 'labels' ])->find($id);
+            return $this->success_response($user);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Store a new User
     public function store(CreateUserRequest $request)
     {
         if($request->user()->can('create.user'))
@@ -85,26 +87,15 @@ class UserController extends Controller
             ])->toArray());
             $user->assignRole('user');
             $user->labels()->attach($request->label_ids);
-            return response()->json($user);
+            return $this->success_response($user);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $user)
-    // {
-    //     $user = User::find($user);
-    //     return response()->json($user);
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update User
     public function update(EditUserRequest $request, string $id)
     {
         if($request->user()->can('update.user') || $request->user()->id == $id)
@@ -112,26 +103,25 @@ class UserController extends Controller
             $user = User::find($id)->update($request->merge([
                 "password" => Hash::make($request->password)
             ])->toArray());
-            return response()->json($user);
+            return $this->success_response($user);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Destroy Users
     public function destroy(Request $request, string $id)
     {
         if($request->user()->can('delete.user') || $request->user()->id == $id)
         {
             User::destroy($id);
+            return $this->delete_response();
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 }

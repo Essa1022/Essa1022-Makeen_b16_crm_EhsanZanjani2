@@ -8,79 +8,135 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class RoleController extends Controller
+class RoleController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    // Roles index
+    public function index(Request $request)
     {
-        $roles = Role::get();
-        return response()->json($roles);
+        if ($request->user()->can('read.role', Role::class))
+        {
+            $roles = Role::get();
+            return $this->success_response($roles);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Show specific Role
+    public function show(Request $request, $id)
+    {
+        if ($request->user()->can('read.role'))
+        {
+            $role = Role::find($id);
+            return $this->success_response($role);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Store a new Role
     public function store(Request $request)
     {
-        $role = Role::create(['name' => $request->name]);
-        return response()->json($role);
+        if ($request->user()->can('create.role', Role::class))
+        {
+            $role = Role::create(['name' => $request->name]);
+            return $this->success_response($role);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 
-    // /**
-    //  * Display the specified resource.
-    //  */
-    // public function show(string $id)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update Role
     public function update(Request $request, string $id)
     {
-        $role = Role::find($id)->update(['name' => $request->name]);
-        return response()->json($role);
+        if ($request->user()->can('update.role', Role::class))
+        {
+            $role = Role::find($id)->update(['name' => $request->name]);
+            return $this->success_response($role);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Destroy Roles
+    public function destroy(Request $request, string $id)
     {
-        Role::destroy($id);
+        if ($request->user()->can('delete.role', Role::class))
+        {
+            Role::destroy($id);
+            return $this->delete_response();
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 
-    // Update user roles
+    // Update User Roles
     public function update_user_roles(Request $request, string $id)
     {
-        $user = User::find($id);
-        $user->syncRoles($request->roles);
-        return response()->json($user);
+        if ($request->user()->can('give.role', Role::class))
+        {
+            $user = User::find($id);
+            $user->syncRoles($request->roles);
+            return $this->success_response($user);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 
-    // Update role permissions
+    // Update Role Permissions
     public function update_permissions(Request $request, string $id)
     {
-        $role = Role::find($id);
-        $role->permissions()->sync($request->permissions);
-        return response()->json($role);
+        if ($request->user()->can('give.permission', Role::class))
+        {
+            $role = Role::find($id);
+            $role->permissions()->sync($request->permissions);
+            return $this->success_response($role);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 
-    // Update user permissions
+    // Update User Permissions
     public function update_user_permissions(Request $request, string $id)
     {
-        $user = User::find($id);
-        $user->syncPermissions([$request->permissions]);
-        return response()->json($user);
+        if ($request->user()->can('give.permission', Role::class))
+        {
+            $user = User::find($id);
+            $user->syncPermissions([$request->permissions]);
+            return $this->success_response($user);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 
     // Permissions index
-    public function permissions_index()
+    public function permissions_index(Request $request)
     {
-        $permissions = Permission::get();
-        return response()->json($permissions);
+        if ($request->user()->can('read.permission', Role::class))
+        {
+            $permissions = Permission::get();
+            return $this->success_response($permissions);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
 }

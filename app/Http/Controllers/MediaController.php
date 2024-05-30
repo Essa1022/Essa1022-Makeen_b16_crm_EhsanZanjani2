@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateMediaRequest;
 use App\Models\Media;
 use App\Models\Message;
 use App\Models\Product;
@@ -10,14 +11,50 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class MediaController extends Controller
+class MediaController extends ApiController
 {
-    use InteractsWithMedia;
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request, string $modelType, $modelId)
+
+    // Show specific Media
+    public function show(Request $request, string $modelType, $modelId, $mediaId)
     {
+        if ($request->user()->can('read.media'))
+        {
+            if ($modelType === 'avatar')
+            {
+                $model = User::find($modelId);
+                $media = $model->media()->find($mediaId);
+            }
+            elseif ($modelType === 'product')
+            {
+                $model = Product::find($modelId);
+                $media = $model->media()->find($mediaId);
+            }
+            elseif ($modelType === 'message')
+            {
+                $model = Message::find($modelId);
+                $media = $model->media()->find($mediaId);
+            }
+            if (!$model)
+            {
+                return $this->notFound_response();
+            }
+            if (!$media)
+            {
+                return $this->notFound_response();
+            }
+            return $this->success_response($media);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Store a new Media
+    public function store(CreateMediaRequest $request, string $modelType, $modelId)
+    {
+        if ($request->user()->can('create.media'))
+        {
             if ($modelType === 'avatar')
             {
                 $model = User::find($modelId);
@@ -35,65 +72,82 @@ class MediaController extends Controller
             }
             if (!$model)
             {
-                return response()->json(['error' => 'Model not found'], 404);
+                return $this->notFound_response();
             }
-            return response()->json(['message' => 'Media added successfully'], 200);
+            return $this->success_response();
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
     }
-    /**
-     * Update the specified resource in storage.
-     */
+
+    // Update Media
     public function update(Request $request,string $modelType, $modelId)
     {
-        if ($modelType === 'avatar')
+        if ($request->user()->can('update.media'))
         {
-            $model = User::find($modelId);
-            $model->clearMediaCollection('avatar');
-            $model->addMedia($request->file('file'))->toMediaCollection('avatar', 'local');
+            if ($modelType === 'avatar')
+            {
+                $model = User::find($modelId);
+                $model->clearMediaCollection('avatar');
+                $model->addMedia($request->file('file'))->toMediaCollection('avatar', 'local');
+            }
+            elseif ($modelType === 'product')
+            {
+                $model = Product::find($modelId);
+                $model->clearMediaCollection('products_images');
+                $model->addMedia($request->file('file'))->toMediaCollection('products_images');
+            }
+            elseif ($modelType === 'message')
+            {
+                $model = Message::find($modelId);
+                $model->clearMediaCollection('messages_files');
+                $model->addMedia($request->file('file'))->toMediaCollection('message_files', 'local');
+            }
+            if (!$model)
+            {
+                return $this->notFound_response();
+            }
+            return $this->success_response();
         }
-        elseif ($modelType === 'product')
+        else
         {
-            $model = Product::find($modelId);
-            $model->clearMediaCollection('products_images');
-            $model->addMedia($request->file('file'))->toMediaCollection('products_images');
+            return $this->unauthorized_response();
         }
-        elseif ($modelType === 'message')
-        {
-            $model = Message::find($modelId);
-            $model->clearMediaCollection('messages_files');
-            $model->addMedia($request->file('file'))->toMediaCollection('message_files', 'local');
-        }
-        if (!$model)
-        {
-            return response()->json(['error' => 'Model not found'], 404);
-        }
-        return response()->json(['message' => 'Media added successfully'], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $modelType, $modelId, string $mediaId)
+    // Destroy Media
+    public function destroy(Request $request, string $modelType, $modelId, string $mediaId)
     {
-        if ($modelType === 'avatar')
+        if ($request->user()->can('delete.media'))
         {
-            $model = User::find($modelId);
+            if ($modelType === 'avatar')
+            {
+                $model = User::find($modelId);
+            }
+            elseif ($modelType === 'product')
+            {
+                $model = Product::find($modelId);
+            }
+            elseif ($modelType === 'message')
+            {
+                $model = Message::find($modelId);
+            }
+            if (!$model)
+            {
+                return $this->notFound_response();
+            }
+            $model->media()->find($mediaId)->delete();
+            return $this->delete_response();
         }
-        elseif ($modelType === 'product')
+        else
         {
-            $model = Product::find($modelId);
+            return $this->unauthorized_response();
         }
-        elseif ($modelType === 'message')
-        {
-            $model = Message::find($modelId);
-        }
-        if (!$model)
-        {
-            return response()->json(['error' => 'Model not found'], 404);
-        }
-        $model->media()->find($mediaId)->delete();
     }
 
-    // Download meida
+    // Download Media
     public function download(string $modelType, $modelId, string $mediaId)
     {
         if ($modelType === 'avatar')

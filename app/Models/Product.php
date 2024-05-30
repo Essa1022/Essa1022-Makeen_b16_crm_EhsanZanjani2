@@ -27,7 +27,7 @@ class Product extends Model implements HasMedia
     public function orders(): BelongsToMany
     {
         return $this->belongsToMany(Order::class)
-        ->withPivot('quantity','warranty_expires_at', 'warranty_expires_at');
+        ->withPivot('quantity','warranties');
     }
 
     public function brand(): BelongsTo

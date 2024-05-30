@@ -5,84 +5,76 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class CategoryController extends ApiController
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request, string $id = null)
+
+    // Categories index
+    public function index(Request $request)
     {
         if($request->user()->can('read.category'))
         {
-        if(!$id)
-        {
-            $categories = Category::orderby('id', 'desc')->paginate(2);
-            return response()->json($categories);
+            $categories = Category::orderby('id', 'desc')->paginate(5);
+            return $this->success_response($categories);
         }
         else
         {
-            $category = Category::find($id);
-            return response()->json($category);
-        }
-        }
-        else
-        {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Show specific Category
+    public function show(Request $request, string $id)
+    {
+        if($request->user()->can('read.category'))
+        {
+            $category = Category::find($id);
+            return $this->success_response($category);
+        }
+        else
+        {
+            return $this->unauthorized_response();
+        }
+    }
+
+    // Store a new Category
     public function store(Request $request)
     {
         if($request->user()->can('create.category'))
         {
         $category = Category::create($request->toArray());
-        return response()->json($category);
+        return $this->success_response($category);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    // public function show(string $id)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    // Update Category
     public function update(Request $request, string $id)
     {
-        if($request->user()->can('read.category'))
+        if($request->user()->can('update.category'))
         {
         $category = Category::find($id)->update($request->toArray());
-        return response()->json($category);
+        return $this->success_response($category);
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Destroy Categories
     public function destroy(Request $request, string $id)
     {
-        if($request->user()->can('read.category'))
+        if($request->user()->can('delete.category'))
         {
             Category::destroy($id);
+            return $this->delete_response();
         }
         else
         {
-            return response()->json('User does not have the permission', 403);
+            return $this->unauthorized_response();
         }
     }
 }
