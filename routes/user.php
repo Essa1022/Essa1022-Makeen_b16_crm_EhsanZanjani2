@@ -10,4 +10,5 @@ Route::group(['prefix' => 'users', 'as' => 'users.'], function () {
     Route::put('update/{id}', [UserController::class, 'update'])->name('update');
     Route::delete('destroy/{id}', [UserController::class, 'destroy'])->name('destroy');
 });
-
+Route::post('login', [UserController::class, 'login'])->name('login')->withoutMiddleware('auth:sanctum');
+Route::post('logout', [UserController::class, 'logout'])->name('logout');

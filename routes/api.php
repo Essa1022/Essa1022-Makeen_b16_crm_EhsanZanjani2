@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
+use App\Jobs\CreateProductJob;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,10 +13,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 // */
-Route::post('login', [UserController::class, 'login'])->name('login');
-Route::post('logout', [UserController::class, 'logout'])->name('logout')->middleware('auth:sanctum');
 Route::get('test', function (){})->name('test');
-require __DIR__ . '/province.php';
 Route::middleware('auth:sanctum')->group(function(){
 
     require __DIR__ . '/team.php';
@@ -34,4 +30,5 @@ Route::middleware('auth:sanctum')->group(function(){
     require __DIR__ . '/message.php';
     require __DIR__ . '/role.php';
     require __DIR__ . '/media.php';
+    require __DIR__ . '/province.php';
 });

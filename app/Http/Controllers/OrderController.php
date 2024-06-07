@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\CreateOrderRequest;
 use App\Http\Requests\Order\EdiOrdertRequest;
+use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -31,6 +32,7 @@ class OrderController extends ApiController
                 }
                 $orders = $orders->orderby('id', 'desc')->paginate(10);
                 return $this->success_response($orders);
+//                return OrderResource::collection($orders);
         }
         else
         {
@@ -48,6 +50,7 @@ class OrderController extends ApiController
         {
             $order = Order::with(['products:id,product_name'])->find($id);
             return $this->success_response($order);
+//          return OrderResource::make($order);
         }
         else
         {
@@ -58,13 +61,16 @@ class OrderController extends ApiController
     // Store a new Order
     public function store(CreateOrderRequest $request)
     {
-        if ($request->user()->can('create.order')) {
-            $products = array_map(function ($product) {
+        if ($request->user()->can('create.order'))
+        {
+            $products = array_map(function ($product)
+            {
                 return is_array($product) ? (object) $product : $product;
             }, $request->input('products'));
 
             $total = 0;
-            foreach ($products as $product) {
+            foreach ($products as $product)
+            {
                 $total += Product::find($product->id)->price * $product->quantity;
             }
 
@@ -73,7 +79,8 @@ class OrderController extends ApiController
                 "status" => 1
             ])->toArray());
 
-            foreach ($products as $productItem) {
+            foreach ($products as $productItem)
+            {
                 $product = Product::find($productItem->id);
                 $warranties = collect($product->warranties)->map(function ($warranty) {
                     return [
@@ -84,12 +91,13 @@ class OrderController extends ApiController
                 });
                 $order->products()->attach($product->id, [
                     "quantity" => $productItem->quantity,
-                    'warranties' => $warranties->toJson()
+                    'warranties' => json_encode($warranties)
                 ]);
             }
-
             return $this->success_response($order);
-        } else {
+        }
+        else
+        {
             return $this->unauthorized_response();
         }
     }

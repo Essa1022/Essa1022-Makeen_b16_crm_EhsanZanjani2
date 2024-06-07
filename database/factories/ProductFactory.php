@@ -21,7 +21,9 @@ class ProductFactory extends Factory
         return [
             'product_name' => fake()->word(),
             'price' => round(fake()->numberBetween(10,500),-1),
-            'description' => fake()->text(50)
+            'description' => fake()->text(50),
+            'category_id' => 1,
+            'brand_id' => 1
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\CreateUserRequest;
 use App\Http\Requests\User\EditUserRequest;
+use App\Jobs\SendEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -87,6 +88,7 @@ class UserController extends ApiController
             ])->toArray());
             $user->assignRole('user');
             $user->labels()->attach($request->label_ids);
+            SendEmail::dispatch($user);
             return $this->success_response($user);
         }
         else
