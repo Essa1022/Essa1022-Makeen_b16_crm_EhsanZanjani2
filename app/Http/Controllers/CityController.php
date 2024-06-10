@@ -11,34 +11,17 @@ class CityController extends ApiController
     {
         $cities = new City();
         $cities = $cities->all();
-        if ($request->province == 'Tehran')
+        match ($request->province)
         {
-            $cities = $cities->where('province_id', 1);
-        }
-        if ($request->province == 'Esfehan')
-        {
-            $cities = $cities->where('province_id', 2);
-        }
-        if ($request->province == 'Khorasan Razavi')
-        {
-            $cities = $cities->where('province_id', 3);
-        }
-        if ($request->province == 'Mazandaran')
-        {
-            $cities = $cities->where('province_id', 4);
-        }
-        if ($request->province == 'Yazd')
-        {
-            $cities = $cities->where('province_id', 5);
-        }
-        if ($request->province == 'Fars')
-        {
-            $cities = $cities->where('province_id', 6);
-        }
-        if ($request->province == 'Alborz')
-        {
-            $cities = $cities->where('province_id', 7);
-        }
+            'Tehran' => $cities = $cities->where('province_id', 1),
+            'Esfehan' => $cities = $cities->where('province_id', 2),
+            'Khorasan Razavi' => $cities = $cities->where('province_id', 3),
+            'Mazandaran' => $cities = $cities->where('province_id', 4),
+            'Yazd' => $cities = $cities->where('province_id', 5),
+            'Fars' => $cities = $cities->where('province_id', 6),
+            'Alborz' => $cities = $cities->where('province_id', 7),
+            default => $cities,
+        };
         return $this->success_response($cities);
     }
 }

@@ -16,12 +16,6 @@ class LabelController extends ApiController
         {
             if($request->user()->can('give.label'))
             {
-                // $model = match ($modelType)
-                // {
-                //     'user' => User::find($modelId),
-                //     'team' => Team::find($modelId),
-                //     'product' => Product::find($modelId),
-                // };
                 if ($modelType === 'user')
                 {
                     $model = User::find($modelId);
