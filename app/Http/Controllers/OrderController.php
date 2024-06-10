@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Order\CreateOrderRequest;
-use App\Http\Requests\Order\EdiOrdertRequest;
+use App\Http\Requests\Order\EditOrdertRequest;
+use App\Http\Requests\Product\EditProductRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\Product;
@@ -82,7 +83,8 @@ class OrderController extends ApiController
             foreach ($products as $productItem)
             {
                 $product = Product::find($productItem->id);
-                $warranties = collect($product->warranties)->map(function ($warranty) {
+                $warranties = $product->warranties->map(function ($warranty)
+                {
                     return [
                         'warranty_id' => $warranty['id'],
                         'warranty_starts_at' => Carbon::now(),
@@ -91,7 +93,7 @@ class OrderController extends ApiController
                 });
                 $order->products()->attach($product->id, [
                     "quantity" => $productItem->quantity,
-                    'warranties' => json_encode($warranties)
+                    'warranties' => $warranties
                 ]);
             }
             return $this->success_response($order);
@@ -103,7 +105,7 @@ class OrderController extends ApiController
     }
 
     // Update Order
-    public function update(EdiOrdertRequest $request, string $id)
+    public function update(EditOrdertRequest $request, string $id)
     {
         if($request->user()->can('update.order'))
         {
