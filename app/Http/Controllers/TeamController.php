@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Team;
 use Illuminate\Http\Request;
 
-class TeamController extends ApiController
+class TeamController extends Controller
 {
 
     // Teams index
@@ -14,11 +14,11 @@ class TeamController extends ApiController
         if($request->user()->can('read.team'))
         {
                 $teams = Team::with('labels', 'tasks')->orderby('id', 'desc')->paginate(2);
-                return $this->success_response($teams);
+                return $this->responseService->success_response($teams);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -28,11 +28,11 @@ class TeamController extends ApiController
         if ($request->user()->can('read.team'))
         {
             $team = Team::with('labels', 'tasks')->find($id);
-            return $this->success_response($team);
+            return $this->responseService->success_response($team);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -43,11 +43,11 @@ class TeamController extends ApiController
         {
             $team = Team::create($request->toArray());
             $team->labels()->attach($request->label_ids);
-            return $this->success_response($team);
+            return $this->responseService->success_response($team);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -59,11 +59,11 @@ class TeamController extends ApiController
             $team = Team::find($id);
             $team->update($request->toArray());
             $team->labels()->sync($request->label_ids);
-            return $this->success_response($team);
+            return $this->responseService->success_response($team);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -73,11 +73,11 @@ class TeamController extends ApiController
         if($request->user()->can('delete.team'))
         {
             Team::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

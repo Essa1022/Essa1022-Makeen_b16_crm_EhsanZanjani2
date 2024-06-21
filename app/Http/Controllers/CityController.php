@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use Illuminate\Http\Request;
 
-class CityController extends ApiController
+class CityController extends Controller
 {
     public function index(Request $request)
     {
@@ -22,6 +22,6 @@ class CityController extends ApiController
             'Alborz' => $cities = $cities->where('province_id', 7),
             default => $cities,
         };
-        return $this->success_response($cities);
+        return $this->responseService->success_response($cities);
     }
 }

@@ -26,7 +26,7 @@ class SendEmail implements ShouldQueue
      */
     public function handle(): void
     {
-//      Mail::to($this->user->email)->send(new WelcomeEmail($this->user));
+//      Mail::from()->to($this->user->email)->send(new WelcomeEmail($this->user));
         Mail::send(new WelcomeEmail($this->user));
     }
 }

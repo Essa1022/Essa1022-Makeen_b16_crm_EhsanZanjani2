@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class ProductController extends ApiController
+class ProductController extends Controller
 {
 
     // Products index
@@ -27,14 +27,14 @@ class ProductController extends ApiController
                     ->orderBy('orders_count', 'desc')
                     ->skip(0)->take(3)
                     ->get();
-                    return $this->success_response($products);
+                    return $this->responseService->success_response($products);
                 }
                 $products = $products->orderby('id', 'desc')->paginate(5);
-                return $this->success_response($products);
+                return $this->responseService->success_response($products);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -44,11 +44,11 @@ class ProductController extends ApiController
         if ($request->user()->can('read.product'))
         {
             $product = Product::with(['category:id,title', 'brand', 'warranties', 'labels'])->find($id);
-            return $this->success_response($product);
+            return $this->responseService->success_response($product);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -60,11 +60,11 @@ class ProductController extends ApiController
             $product = Product::create($request->toArray());
             $product->warranties()->attach($request->warranty_ids);
             $product->labels()->attach($request->label_ids);
-            return $this->success_response($product);
+            return $this->responseService->success_response($product);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -74,11 +74,11 @@ class ProductController extends ApiController
         if($request->user()->can('update.product'))
         {
             $product = Product::find($id)->update($request->toArray());
-            return $this->success_response($product);
+            return $this->responseService->success_response($product);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -88,11 +88,11 @@ class ProductController extends ApiController
         if($request->user()->can('delete.product'))
         {
             Product::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

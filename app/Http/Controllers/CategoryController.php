@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-class CategoryController extends ApiController
+class CategoryController extends Controller
 {
 
     // Categories index
@@ -14,11 +14,11 @@ class CategoryController extends ApiController
         if($request->user()->can('read.category'))
         {
             $categories = Category::orderby('id', 'desc')->paginate(5);
-            return $this->success_response($categories);
+            return $this->responseService->success_response($categories);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -28,11 +28,11 @@ class CategoryController extends ApiController
         if($request->user()->can('read.category'))
         {
             $category = Category::find($id);
-            return $this->success_response($category);
+            return $this->responseService->success_response($category);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -42,11 +42,11 @@ class CategoryController extends ApiController
         if($request->user()->can('create.category'))
         {
         $category = Category::create($request->toArray());
-        return $this->success_response($category);
+        return $this->responseService->success_response($category);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -56,11 +56,11 @@ class CategoryController extends ApiController
         if($request->user()->can('update.category'))
         {
         $category = Category::find($id)->update($request->toArray());
-        return $this->success_response($category);
+        return $this->responseService->success_response($category);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -70,11 +70,11 @@ class CategoryController extends ApiController
         if($request->user()->can('delete.category'))
         {
             Category::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

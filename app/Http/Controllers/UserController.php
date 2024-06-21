@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 
-class UserController extends ApiController
+class UserController extends Controller
 {
     // logout
     public function logout()
@@ -33,6 +33,8 @@ class UserController extends ApiController
             return response()->json('password incorrect');
         }
         $token = $user->createToken($request->phone_number)->plainTextToken;
+//        $expirationTime = Carbon::now()->addHours(2);
+//        $token->token->expires_at = $expirationTime;
         return response()->json(['token' => $token]);
     }
 
@@ -56,11 +58,11 @@ class UserController extends ApiController
                     $users = $users->withCount('orders');
                 }
                 $users = $users->orderBy('id', 'desc')->paginate(10);
-                return $this->success_response($users);
+                return $this->responseService->success_response($users);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -70,11 +72,11 @@ class UserController extends ApiController
         if ($request->user()->can('read.user') || $request->user()->id == $id)
         {
             $user = User::with(['orders', 'team:id,name','tasks:id,title', 'ticket:id,subject', 'labels' ])->find($id);
-            return $this->success_response($user);
+            return $this->responseService->success_response($user);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -89,11 +91,11 @@ class UserController extends ApiController
             $user->assignRole('user');
             $user->labels()->attach($request->label_ids);
             SendEmail::dispatch($user);
-            return $this->success_response($user);
+            return $this->responseService->success_response($user);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -105,11 +107,11 @@ class UserController extends ApiController
             $user = User::find($id)->update($request->merge([
                 "password" => Hash::make($request->password)
             ])->toArray());
-            return $this->success_response($user);
+            return $this->responseService->success_response($user);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -119,11 +121,11 @@ class UserController extends ApiController
         if($request->user()->can('delete.user') || $request->user()->id == $id)
         {
             User::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

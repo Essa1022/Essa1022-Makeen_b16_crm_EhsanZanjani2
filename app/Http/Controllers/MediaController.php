@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
-class MediaController extends ApiController
+class MediaController extends Controller
 {
 
     // Show specific Media
@@ -36,17 +36,17 @@ class MediaController extends ApiController
             }
             if (!$model)
             {
-                return $this->notFound_response();
+                return $this->responseService->notFound_response();
             }
             if (!$media)
             {
-                return $this->notFound_response();
+                return $this->responseService->notFound_response();
             }
-            return $this->success_response($media);
+            return $this->responseService->success_response($media);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -72,13 +72,13 @@ class MediaController extends ApiController
             }
             if (!$model)
             {
-                return $this->notFound_response();
+                return $this->responseService->notFound_response();
             }
-            return $this->success_response();
+            return $this->responseService->success_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -107,13 +107,13 @@ class MediaController extends ApiController
             }
             if (!$model)
             {
-                return $this->notFound_response();
+                return $this->responseService->notFound_response();
             }
-            return $this->success_response();
+            return $this->responseService->success_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -139,11 +139,11 @@ class MediaController extends ApiController
                 return $this->notFound_response();
             }
             $model->media()->find($mediaId)->delete();
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 

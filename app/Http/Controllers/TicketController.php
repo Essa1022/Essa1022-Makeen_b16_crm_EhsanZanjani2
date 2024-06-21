@@ -6,7 +6,7 @@ use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class TicketController extends ApiController
+class TicketController extends Controller
 {
 
     // Tickets index
@@ -15,11 +15,11 @@ class TicketController extends ApiController
         if($request->user()->can('read.ticket'))
         {
                 $tickets = Ticket::with('messages')->orderby('id', 'desc')->paginate(2);
-                return $this->success_response($tickets);
+                return $this->responseService->success_response($tickets);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -29,11 +29,11 @@ class TicketController extends ApiController
         if ($request->user()->can('read.ticket'))
         {
             $ticket = Ticket::with('messages')->find($id);
-            return $this->success_response($ticket);
+            return $this->responseService->success_response($ticket);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -45,11 +45,11 @@ class TicketController extends ApiController
             $ticket = Ticket::create($request->merge([
                 'expires_at' => Carbon::now()->addDay(2)
             ])->toArray());
-            return $this->success_response($ticket);
+            return $this->responseService->success_response($ticket);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -59,11 +59,11 @@ class TicketController extends ApiController
         if($request->user()->can('update.ticket'))
         {
         $ticket = Ticket::find($id)->update($request->toArray());
-        return $this->success_response($ticket);
+        return $this->responseService->success_response($ticket);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -73,11 +73,11 @@ class TicketController extends ApiController
         if($request->user()->can('delete.ticket'))
         {
             Ticket::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

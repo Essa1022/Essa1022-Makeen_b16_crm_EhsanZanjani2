@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use Illuminate\Http\Request;
 
-class TaskController extends ApiController
+class TaskController extends Controller
 {
 
     // Tasks index
@@ -14,11 +14,11 @@ class TaskController extends ApiController
         if ($request->user()->can('read.task'))
         {
                 $tasks = Task::with('taskable')->orderby('id', 'desc')->paginate(2);
-                return $this->success_response($tasks);
+                return $this->responseService->success_response($tasks);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -28,11 +28,11 @@ class TaskController extends ApiController
         if ($request->user()->can('read.task'))
         {
             $task = Task::with('taskable')->find($id);
-            return $this->success_response($task);
+            return $this->responseService->success_response($task);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -42,11 +42,11 @@ class TaskController extends ApiController
         if ($request->user()->can('create.task'))
         {
             $task = Task::create($request->toArray());
-            return $this->success_response($task);
+            return $this->responseService->success_response($task);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -56,11 +56,11 @@ class TaskController extends ApiController
         if ($request->user()->can('update.task'))
         {
             $task = Task::find($id)->update($request->toArray());
-            return $this->success_response($task);
+            return $this->responseService->success_response($task);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -70,11 +70,11 @@ class TaskController extends ApiController
         if ($request->user()->can('delete.team'))
         {
             Task::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

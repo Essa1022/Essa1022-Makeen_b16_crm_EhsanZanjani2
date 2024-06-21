@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Warranty;
 use Illuminate\Http\Request;
 
-class WarrantyController extends ApiController
+class WarrantyController extends Controller
 {
 
     // Warranties index
@@ -14,11 +14,11 @@ class WarrantyController extends ApiController
         if($request->user()->can('read.warranty'))
         {
                 $warranties = Warranty::orderby('id', 'desc')->paginate(2);
-                return $this->success_response($warranties);
+                return $this->responseService->success_response($warranties);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -28,11 +28,11 @@ class WarrantyController extends ApiController
         if ($request->user()->can('read.warranty'))
         {
             $warranty = Warranty::find($id);
-            return $this->success_response($warranty);
+            return $this->responseService->success_response($warranty);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -42,11 +42,11 @@ class WarrantyController extends ApiController
         if($request->user()->can('create.warranty'))
         {
             $warranty = Warranty::create($request->toArray());
-            return $this->success_response($warranty);
+            return $this->responseService->success_response($warranty);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -56,11 +56,11 @@ class WarrantyController extends ApiController
         if($request->user()->can('update.warrany'))
         {
             $warranty = Warranty::find($id)->update($request->toArray());
-            return $this->success_response($warranty);
+            return $this->responseService->success_response($warranty);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -70,11 +70,11 @@ class WarrantyController extends ApiController
         if($request->user()->can('delete.warranty'))
         {
             Warranty::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

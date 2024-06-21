@@ -8,7 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class LabelController extends ApiController
+class LabelController extends Controller
 {
 
     // Sync Labels
@@ -30,15 +30,15 @@ class LabelController extends ApiController
                 }
                 if (!$model)
                 {
-                    return $this->notFound_response();
+                    return $this->responseService->notFound_response();
                 }
                 $labels = $request->input('label_ids');
                 $model->labels()->sync($labels);
-                return $this->success_response();
+                return $this->responseService->success_response();
             }
             else
             {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
             }
         }
 
@@ -48,11 +48,11 @@ class LabelController extends ApiController
         if($request->user()->can('read.label'))
         {
             $labels = Label::orderby('id', 'desc')->paginate(5);
-            return $this->success_response($labels);
+            return $this->responseService->success_response($labels);
         }
         else
         {
-        return $this->unauthorized_response();
+        return $this->responseService->unauthorized_response();
         }
     }
 
@@ -62,11 +62,11 @@ class LabelController extends ApiController
         if($request->user()->can('read.label'))
         {
             $label = Label::find($id);
-            return $this->success_response($label);
+            return $this->responseService->success_response($label);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -76,11 +76,11 @@ class LabelController extends ApiController
         if($request->user()->can('create.label'))
         {
         $label = Label::create($request->toArray());
-        return $this->success_response($label);
+        return $this->responseService->success_response($label);
         }
         else
         {
-        return $this->unauthorized_response();
+        return $this->responseService->unauthorized_response();
         }
     }
 
@@ -90,11 +90,11 @@ class LabelController extends ApiController
         if($request->user()->can('update.label'))
         {
         $label = Label::find($id)->update($request->toArray());
-        return $this->success_response($label);
+        return $this->responseService->success_response($label);
         }
         else
         {
-        return $this->unauthorized_response();
+        return $this->responseService->unauthorized_response();
         }
     }
 
@@ -104,11 +104,11 @@ class LabelController extends ApiController
         if($request->user()->can('delete.label'))
         {
             Label::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-        return $this->unauthorized_response();
+        return $this->responseService->unauthorized_response();
         }
     }
 

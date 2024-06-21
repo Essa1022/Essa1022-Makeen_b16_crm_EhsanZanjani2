@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Factor;
 use Illuminate\Http\Request;
 
-class FactorController extends ApiController
+class FactorController extends Controller
 {
 
     // Factors index
@@ -14,11 +14,11 @@ class FactorController extends ApiController
         if($request->user()->can('read.factor'))
         {
             $factors = Factor::orderby('id', 'desc')->paginate(5);
-            return $this->success_response($factors);
+            return $this->responseService->success_response($factors);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -28,11 +28,11 @@ class FactorController extends ApiController
         if($request->user()->can('read.factor'))
         {
             $factor = Factor::find($id);
-            return $this->success_response($factor);
+            return $this->responseService->success_response($factor);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -42,11 +42,11 @@ class FactorController extends ApiController
         if($request->user()->can('create.factor'))
         {
         $factor = Factor::create($request->toArray());
-        return $this->success_response($factor);
+        return $this->responseService->success_response($factor);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -56,11 +56,11 @@ class FactorController extends ApiController
         if($request->user()->can('update.factor'))
         {
             $factor = Factor::find($id)->update();
-            return $this->success_response($factor);
+            return $this->responseService->success_response($factor);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -70,11 +70,11 @@ class FactorController extends ApiController
         if($request->user()->can('delete.factor'))
         {
             Factor::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

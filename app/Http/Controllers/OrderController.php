@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Spatie\FlareClient\Api;
 
-class OrderController extends ApiController
+class OrderController extends Controller
 {
 
     // Orders index
@@ -32,16 +32,16 @@ class OrderController extends ApiController
                     });
                 }
                 $orders = $orders->orderby('id', 'desc')->paginate(10);
-                return $this->success_response($orders);
-//                return OrderResource::collection($orders);
+                return $this->responseService->success_response($orders);
+//              return OrderResource::collection($orders);
         }
         else
         {
                 $orders = Order::where('user_id', $request->user()->id)->with(['products:id,product_name'])
                 ->orderby('id', 'desc')->paginate(2);
-                return $this->success_response($orders);
+                return $this->responseService->success_response($orders);
         }
-        return $this->unauthorized_response();
+        return $this->responseService->unauthorized_response();
     }
 
     // Show specific Order
@@ -50,12 +50,12 @@ class OrderController extends ApiController
         if($request->user()->can('read.order'))
         {
             $order = Order::with(['products:id,product_name'])->find($id);
-            return $this->success_response($order);
+            return $this->responseService->success_response($order);
 //          return OrderResource::make($order);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -96,11 +96,11 @@ class OrderController extends ApiController
                     'warranties' => $warranties
                 ]);
             }
-            return $this->success_response($order);
+            return $this->responseService->success_response($order);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -110,11 +110,11 @@ class OrderController extends ApiController
         if($request->user()->can('update.order'))
         {
         $order = Order::find($id)->update($request->toArray());
-        return $this->success_response($order);
+        return $this->responseService->success_response($order);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -124,11 +124,25 @@ class OrderController extends ApiController
         if($request->user()->can('delete.order'))
         {
             Order::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
+        }
+    }
+
+    // Change Status
+    public function change_status(Request $request, string $order_id, int $status)
+    {
+        if($request->user()->can('update.order'))
+        {
+            $order = Order::find($order_id)->update(['status' => $status]);
+            return $this->responseService->success_response($order);
+        }
+        else
+        {
+            return $this->responseService->unauthorized_response();
         }
     }
 }

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 
-class BrandController extends ApiController
+class BrandController extends Controller
 {
 
     //  Brands index
@@ -14,11 +14,11 @@ class BrandController extends ApiController
         if($request->user()->can('read.brand'))
         {
             $brands = Brand::orderby('id', 'desc')->paginate(5);
-            return $this->success_response($brands);
+            return $this->responseService->success_response($brands);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -28,11 +28,11 @@ class BrandController extends ApiController
         if($request->user()->can('read.brand'))
         {
             $brand = Brand::find($id);
-            return $this->success_response($brand);
+            return $this->responseService->success_response($brand);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -42,11 +42,11 @@ class BrandController extends ApiController
         if($request->user()->can('create.brand'))
         {
         $brand = Brand::create($request->toArray());
-        return $this->success_response($brand);
+        return $this->responseService->success_response($brand);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -56,11 +56,11 @@ class BrandController extends ApiController
         if($request->user()->can('update.brand'))
         {
         $brand = Brand::find($id)->update($request->toArray());
-        return $this->success_response($brand);
+        return $this->responseService->success_response($brand);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -70,11 +70,11 @@ class BrandController extends ApiController
         if($request->user()->can('delete.brand'))
         {
             Brand::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

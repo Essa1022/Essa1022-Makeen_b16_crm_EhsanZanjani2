@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class RoleController extends ApiController
+class RoleController extends Controller
 {
 
     // Roles index
@@ -17,11 +17,11 @@ class RoleController extends ApiController
         if ($request->user()->can('read.role', Role::class))
         {
             $roles = Role::get();
-            return $this->success_response($roles);
+            return $this->responseService->success_response($roles);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -31,11 +31,11 @@ class RoleController extends ApiController
         if ($request->user()->can('read.role'))
         {
             $role = Role::find($id);
-            return $this->success_response($role);
+            return $this->responseService->success_response($role);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -45,11 +45,11 @@ class RoleController extends ApiController
         if ($request->user()->can('create.role', Role::class))
         {
             $role = Role::create(['name' => $request->name]);
-            return $this->success_response($role);
+            return $this->responseService->success_response($role);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -59,11 +59,11 @@ class RoleController extends ApiController
         if ($request->user()->can('update.role', Role::class))
         {
             $role = Role::find($id)->update(['name' => $request->name]);
-            return $this->success_response($role);
+            return $this->responseService->success_response($role);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -73,11 +73,11 @@ class RoleController extends ApiController
         if ($request->user()->can('delete.role', Role::class))
         {
             Role::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -88,26 +88,26 @@ class RoleController extends ApiController
         {
             $user = User::find($id);
             $user->syncRoles($request->roles);
-            return $this->success_response($user);
+            return $this->responseService->success_response($user);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
     // Update Role Permissions
-    public function update_permissions(Request $request, string $id)
+    public function update_role_permissions(Request $request, string $id)
     {
         if ($request->user()->can('give.permission', Role::class))
         {
             $role = Role::find($id);
             $role->permissions()->sync($request->permissions);
-            return $this->success_response($role);
+            return $this->responseService->success_response($role);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -118,11 +118,11 @@ class RoleController extends ApiController
         {
             $user = User::find($id);
             $user->syncPermissions([$request->permissions]);
-            return $this->success_response($user);
+            return $this->responseService->success_response($user);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -132,11 +132,11 @@ class RoleController extends ApiController
         if ($request->user()->can('read.permission', Role::class))
         {
             $permissions = Permission::get();
-            return $this->success_response($permissions);
+            return $this->responseService->success_response($permissions);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 }

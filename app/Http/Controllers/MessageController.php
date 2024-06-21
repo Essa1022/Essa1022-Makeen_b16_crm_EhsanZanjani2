@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 
-class MessageController extends ApiController
+class MessageController extends Controller
 {
 
     // Messages index
@@ -14,11 +14,11 @@ class MessageController extends ApiController
         if($request->user()->can('read.message'))
         {
             $messages = Message::orderby('id', 'desc')->paginate(5);
-            return $this->success_response($messages);
+            return $this->responseService->success_response($messages);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -42,11 +42,11 @@ class MessageController extends ApiController
         if($request->user()->can('create.message'))
         {
         $message = Message::create($request->toArray());
-        return $this->success_response($message);
+        return $this->responseService->success_response($message);
         }
         else
         {
-            return $this->unauthorized_response();
+            return $this->responseService->unauthorized_response();
         }
     }
 
@@ -56,9 +56,9 @@ class MessageController extends ApiController
         if($request->user()->can('update.message'))
         {
         $message = Message::find($id)->update();
-        return $this->success_response($message);
+        return $this->responseService->success_response($message);
         }
-        return $this->unauthorized_response();
+        return $this->responseService->unauthorized_response();
     }
 
     // Destroy Messages
@@ -67,8 +67,8 @@ class MessageController extends ApiController
         if($request->user()->can('delete.message'))
         {
             Message::destroy($id);
-            return $this->delete_response();
+            return $this->responseService->delete_response();
         }
-        return $this->unauthorized_response();
+        return $this->responseService->unauthorized_response();
     }
 }

@@ -1,17 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Http\JsonResponse;
 
-class ApiController extends Controller
+class ResponseService
 {
-
-    use InteractsWithMedia;
-
-    public function success_response($data = "", string $message = "The operation was successfull")
+    public function success_response($data = "", string $message = "The operation was successful"): JsonResponse
     {
         return response()->json([
             "success" => 'success',
@@ -20,7 +15,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function error_response(string $message = "The operation failed")
+    public function error_response(string $message = "The operation failed"): JsonResponse
     {
         return response()->json([
             "success" => 'error',
@@ -29,7 +24,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function unauthorized_response()
+    public function unauthorized_response(): JsonResponse
     {
         return response()->json([
             "success" => 'error',
@@ -38,7 +33,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function delete_response()
+    public function delete_response(): JsonResponse
     {
         return response()->json([
             "success" => 'success',
@@ -46,7 +41,7 @@ class ApiController extends Controller
         ]);
     }
 
-    public function notFound_response()
+    public function notFound_response(): JsonResponse
     {
         return response()->json([
             "success" => 'error',
