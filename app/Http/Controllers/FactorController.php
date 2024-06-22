@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Factor;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class FactorController extends Controller
@@ -71,6 +72,20 @@ class FactorController extends Controller
         {
             Factor::destroy($id);
             return $this->responseService->delete_response();
+        }
+        else
+        {
+            return $this->responseService->unauthorized_response();
+        }
+    }
+
+    // Change Status
+    public function change_status(Request $request, string $factor_id, int $status)
+    {
+        if($request->user()->can('update.order'))
+        {
+            $factor = Factor::find($factor_id)->update(['status' => $status]);
+            return $this->responseService->success_response($factor);
         }
         else
         {

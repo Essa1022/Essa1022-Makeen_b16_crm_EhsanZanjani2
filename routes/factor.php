@@ -9,4 +9,5 @@ Route::group(['prefix' => 'factors', 'as' => 'factors.'], function () {
     Route::post('store', [FactorController::class, 'store'])->name('store');
     Route::put('update/{id}', [FactorController::class, 'update'])->name('update');
     Route::delete('destroy/{id}', [FactorController::class, 'destroy'])->name('destroy');
+    Route::put('change_status/{factor_id}/{status}', [FactorController::class, 'change_status'])->name('change_status');
 });
